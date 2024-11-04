@@ -1,18 +1,14 @@
 <template>
-    <!-- App 컴포넌트의 루트 요소 -->
-    <div id="app" @scroll="handleScroll">
-      <div>
-        <!-- 카테고리 리스트 컴포넌트에 제목과 인기 항목 데이터를 전달 -->
-        <CategoryListComponent
-          title="Popular Now"
-          :items="popularItems"
-        />
-      </div>
+    <div id="app">
+      <category-list-component :items="popularItems" />
+      <!-- 로딩 표시와 TOP 버튼 -->
+      <div v-if="isFetching" class="loading">Loading...</div>
+      <button v-if="showTopButton" @click="scrollToTop" class="top-button">TOP</button>
     </div>
   </template>
   
   <script lang="ts">
-  import { defineComponent, ref, onMounted } from 'vue';
+  import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
   import CategoryListComponent from '../components/CategoryList.vue';
   
   // TMDb API 키 및 기본 URL 설정
@@ -20,53 +16,38 @@
   const BASE_URL = 'https://api.themoviedb.org/3'; // TMDb API 기본 URL
   
   export default defineComponent({
-    name: 'PopularView',
+    name: 'App',
     components: {
       CategoryListComponent,
     },
     setup() {
-      // 인기 항목을 저장할 반응형 배열
       const popularItems = ref([]);
-      // 현재 페이지 번호를 저장할 반응형 변수
       const currentPage = ref(1);
-      // 데이터가 로딩 중인지 여부를 저장할 반응형 변수
       const isFetching = ref(false);
+      const showTopButton = ref(false);
   
       // 인기 영화를 가져오는 함수
       const fetchPopularMovies = async () => {
-        // 이미 데이터를 가져오는 중이라면 함수를 종료
         if (isFetching.value) return;
-        isFetching.value = true; // 데이터를 가져오는 중으로 설정
+        isFetching.value = true;
   
-        // API 요청 URL 구성
         const url = `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=ko-KR&page=${currentPage.value}`;
         try {
-          // API로부터 데이터를 가져오는 내부 함수 정의
-          const fetchMovies = async (url: string) => {
-            const response = await fetch(url);
-            // 응답 데이터를 JSON 형태로 반환
-            return await response.json();
-          };
+          const response = await fetch(url);
+          const data = await response.json();
   
-          // API로부터 데이터를 가져옴
-          const data = await fetchMovies(url);
-  
-          // 가져온 데이터를 기존의 popularItems 배열에 추가
           popularItems.value = [
             ...popularItems.value,
             ...data.results.map((item: any) => ({
-              id: item.id, // 영화 ID
-              name: item.title, // 영화 제목
-              image: `https://image.tmdb.org/t/p/w500${item.poster_path}`, // 포스터 이미지 URL
+              id: item.id,
+              name: item.title,
+              image: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
             })),
           ];
-          // 다음 페이지 번호로 증가
           currentPage.value += 1;
         } catch (error) {
-          // 오류가 발생한 경우 콘솔에 오류 메시지 출력
           console.error('Failed to fetch popular movies:', error);
         } finally {
-          // 데이터 로딩 상태를 false로 설정하여 로딩이 끝났음을 표시
           isFetching.value = false;
         }
       };
@@ -77,9 +58,16 @@
         const bottomOfWindow =
           window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 10;
         if (bottomOfWindow) {
-          // 맨 아래에 도달하면 인기 영화를 추가로 가져옴
           fetchPopularMovies();
         }
+  
+        // 스크롤 위치에 따라 TOP 버튼 표시 여부 설정
+        showTopButton.value = window.scrollY > 200;
+      };
+  
+      // TOP 버튼 클릭 시 화면 맨 위로 스크롤하는 함수
+      const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       };
   
       // 컴포넌트가 마운트될 때 호출되는 함수
@@ -90,9 +78,17 @@
         window.addEventListener('scroll', handleScroll);
       });
   
-      // 템플릿에 반환할 변수들
+      // 컴포넌트가 언마운트될 때 호출되는 함수
+      onBeforeUnmount(() => {
+        // 스크롤 이벤트 리스너 제거
+        window.removeEventListener('scroll', handleScroll);
+      });
+  
       return {
         popularItems,
+        isFetching,
+        showTopButton,
+        scrollToTop,
       };
     },
   });
@@ -100,5 +96,32 @@
   
   <style scoped>
   /* 기존 스타일 유지 */
+  
+  .loading {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .top-button {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    background-color: #e50914;
+    color: #ffffff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .top-button:hover {
+    background-color: #f40612;
+  }
   </style>
   

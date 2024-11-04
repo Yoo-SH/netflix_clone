@@ -1,0 +1,65 @@
+<template>
+  <div id="app">
+    <nav>
+      <NavbarComponent />
+    </nav>
+    <div>
+      <CategoryListComponent
+        title="Popular Now"
+        :items="popularItems"
+      />
+    </div>
+    <footer>
+      <FooterComponent />
+    </footer>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, ref, onMounted } from 'vue';
+import NavbarComponent from './components/Navbar.vue';
+import FooterComponent from './components/Footer.vue';
+import CategoryListComponent from './components/CategoryList.vue';
+import { fetchMovies } from './services/api'; // fetchMovies 함수를 별도 파일에서 가져온다고 가정합니다.
+
+const API_KEY = 'YOUR_API_KEY_HERE';
+const BASE_URL = 'https://api.example.com'; // 실제 API URL로 교체하세요
+
+export default defineComponent({
+  name: 'App',
+  components: {
+    NavbarComponent,
+    FooterComponent,
+    CategoryListComponent,
+  },
+  setup() {
+    const popularItems = ref([]);
+    
+    const fetchPopularMovies = async () => {
+      const url = `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=ko-KR&page=1`;
+      try {
+        const data = await fetchMovies(url);
+        popularItems.value = data.results.map((item: any) => ({
+          id: item.id,
+          name: item.title,
+          image: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
+        }));
+      } catch (error) {
+        console.error('Failed to fetch popular movies:', error);
+      }
+    };
+
+    onMounted(() => {
+      fetchPopularMovies();
+    });
+
+    return {
+      popularItems,
+    };
+  },
+});
+</script>
+
+<style scoped>
+/* 기존 스타일 유지 */
+</style>

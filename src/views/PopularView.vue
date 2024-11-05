@@ -4,11 +4,20 @@
         <button @click="goToTableView" class="toggle-view-button">
           Switch to Table View
         </button>
-        <component :is="currentView" :items="popularItems" />
       </div>
-      <!-- 로딩 표시와 TOP 버튼 (무한 스크롤 모드일 때만 표시) -->
       <div v-if="isFetching && !isTableView" class="loading">Loading...</div>
       <button v-if="showTopButton && !isTableView" @click="scrollToTop" class="top-button">TOP</button>
+      <!-- 포스터 리스트 추가 -->
+      <div class="poster-list">
+        <div
+          v-for="item in popularItems"
+          :key="item.id"
+          class="poster-container"
+        >
+          <img :src="item.image" alt="movie poster" class="poster-image" />
+          <p class="poster-title">{{ item.name }}</p>
+        </div>
+      </div>
     </div>
   </template>
   
@@ -121,6 +130,7 @@
     color: #ffffff;
     padding: 10px;
     border-radius: 5px;
+    z-index: 1000; /* 다른 요소 위에 표시되도록 설정 */
   }
   
   .top-button {
@@ -133,6 +143,7 @@
     padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
+    z-index: 1000; /* 다른 요소 위에 표시되도록 설정 */
   }
   
   .top-button:hover {
@@ -142,7 +153,7 @@
   .toggle-view-button {
     margin: 20px;
     padding: 10px;
-    background-color: #141414;
+    background-color: #f40612;
     color: #ffffff;
     border: none;
     border-radius: 5px;
@@ -151,6 +162,43 @@
   
   .toggle-view-button:hover {
     background-color: #333333;
+  }
+  
+  /* 포스터 이미지와 제목을 포함한 컨테이너 */
+  .poster-list {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+  }
+  
+  .poster-container {
+    position: relative;
+    transition: transform 0.3s;
+  }
+  
+  .poster-container:hover {
+    transform: scale(1.1);
+  }
+  
+  .poster-image {
+    width: 100%;
+    border-radius: 10px;
+    transition: transform 0.3s;
+  }
+  
+  .poster-title {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: color 0.3s;
+  }
+  
+  .poster-container:hover .poster-title {
+    color: #ffffff; /* 글자 색상 변경 */
   }
   </style>
   

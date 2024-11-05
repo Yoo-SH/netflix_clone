@@ -1,11 +1,11 @@
 <template>
+  <button @click="goToPopularView" class="toggle-view-button">Switch to Popular View</button>
   <div class="grid-view">
     <div class="grid-container">
       <div v-for="item in paginatedItems" :key="item.id" class="grid-item">
-        <div class="item-id">ID: {{ item.id }}</div>
-        <div class="item-title">{{ item.name }}</div>
         <div class="poster-image-wrapper">
           <img :src="item.image" :alt="item.name" class="poster-image" v-if="item.image" />
+          <div class="poster-title">{{ item.name }}</div>
         </div>
       </div>
     </div>
@@ -21,6 +21,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
 interface Item {
   id: number;
@@ -41,6 +42,7 @@ export default defineComponent({
     const currentPage = ref(1);
     const itemsPerPage = 16;
     const isFetching = ref(false);
+    const router = useRouter();
 
     const totalPages = computed(() => Math.ceil(popularItems.value.length / itemsPerPage));
 
@@ -50,7 +52,7 @@ export default defineComponent({
       return popularItems.value.slice(start, end);
     });
 
-     // 페이지네이션에 표시될 페이지 번호 계산
+    // 페이지네이션에 표시될 페이지 번호 계산
     const visiblePages = computed(() => {
       const pages = []; // 페이지 번호 목록
       const maxVisiblePages = 8; // 최대 표시할 페이지 번호 개수
@@ -58,42 +60,57 @@ export default defineComponent({
 
       let startPage = Math.max(1, currentPage.value - Math.floor(maxVisiblePages / 2)); // 시작 페이지 번호
       let endPage = startPage + maxVisiblePages - 1; // 끝 페이지 번호
-      console.log(startPage);
-      console.log(endPage);
 
+      if (endPage > total) { // 끝 페이지 번호가 전체 페이지 개수를 초과하는 경우
+        endPage = total; // 끝 페이지 번호를 전체 페이지 개수로 설정
+        startPage = Math.max(1, endPage - maxVisiblePages + 1); // 시작 페이지 번호를 다시 계산
+      }
       
       for (let i = startPage; i <= endPage; i++) { // 시작 페이지부터 끝 페이지까지 반복
         pages.push(i); // 페이지 번호 목록에 추가
       }
 
-      if (endPage > total) {// 끝 페이지 번호가 전체 페이지 개수를 초과하는 경우
-        endPage = total; // 끝 페이지 번호를 전체 페이지 개수로 설정
-        startPage = Math.max(1, endPage - maxVisiblePages + 1); // 시작 페이지 번호를 다시 계산
-      }
-
-
       return pages;
     });
     
-    const fetchPopularMovies = async () => {
+    const fetchPopularMovies = async (initialLoad = false) => {
       if (isFetching.value) return;
       isFetching.value = true;
 
       const API_KEY = '281dc9b971acbdf5c2a5787ded23f9b9';
       const BASE_URL = 'https://api.themoviedb.org/3';
-      const url = `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=ko-KR&page=${currentPage.value}`;
       try {
-        const response = await fetch(url);
-        const data = await response.json();
+        if (initialLoad) {
+          // 초기 8페이지까지의 데이터를 한 번에 가져옴
+          for (let page = 1; page <= 8; page++) {
+            const url = `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=ko-KR&page=${page}`;
+            const response = await fetch(url);
+            const data = await response.json();
 
-        popularItems.value = [
-          ...popularItems.value,
-          ...data.results.map((item: any) => ({
-            id: item.id,
-            name: item.title,
-            image: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
-          })),
-        ];
+            popularItems.value = [
+              ...popularItems.value,
+              ...data.results.map((item: any) => ({
+                id: item.id,
+                name: item.title,
+                image: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
+              })),
+            ];
+          }
+        } else {
+          // 추가 페이지 데이터를 가져옴
+          const url = `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=ko-KR&page=${currentPage.value}`;
+          const response = await fetch(url);
+          const data = await response.json();
+
+          popularItems.value = [
+            ...popularItems.value,
+            ...data.results.map((item: any) => ({
+              id: item.id,
+              name: item.title,
+              image: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
+            })),
+          ];
+        }
       } catch (error) {
         console.error('Failed to fetch popular movies:', error);
       } finally {
@@ -122,8 +139,12 @@ export default defineComponent({
       }
     };
 
+    const goToPopularView = () => {
+      router.push('/popular');
+    };
+
     onMounted(() => {
-      fetchPopularMovies();
+      fetchPopularMovies(true); // 초기 로드 시 8페이지 데이터 가져오기
     });
 
     return {
@@ -135,6 +156,7 @@ export default defineComponent({
       previousPage,
       nextPage,
       popularItems,
+      goToPopularView,
     };
   },
 });
@@ -142,45 +164,48 @@ export default defineComponent({
 
 <style scoped>
 .grid-view {
-  margin: 20px;
+  margin: 0px;
+  padding: 0;
   overflow: auto;
+  background-color: #141414; /* 넷플릭스와 유사한 어두운 배경색으로 변경 */
 }
 
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 15px;
   margin-bottom: 20px;
+  padding: 0 50px;
 }
 
 .grid-item {
-  background-color: #f2f2f2;
-  padding: 15px;
-  border-radius: 8px;
-  text-align: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
 }
 
-.item-id {
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.item-title {
-  margin-bottom: 10px;
-  font-size: 1.2em;
+.grid-item:hover {
+  transform: scale(1.05);
 }
 
 .poster-image-wrapper {
-  background-color: #e50914;
-  padding: 10px;
-  border-radius: 8px;
+  position: relative;
+}
+
+.poster-title {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 1em;
 }
 
 .poster-image {
   width: 100%;
   height: auto;
   border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .pagination {
@@ -188,13 +213,20 @@ export default defineComponent({
   justify-content: center;
   align-items: center;
   gap: 10px;
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .page-number {
   padding: 10px;
   cursor: pointer;
   user-select: none;
+  color: #ffffff; /* 페이지 번호 색상을 흰색으로 변경 */
+  transition: background-color 0.3s;
+}
+
+.page-number:hover {
+  background-color: #333333;
+  border-radius: 5px;
 }
 
 .page-number.active {
@@ -203,16 +235,36 @@ export default defineComponent({
 }
 
 button {
+  padding: 10px 20px;
+  background-color: #e50914;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #f40612;
+}
+
+button:disabled {
+  background-color: #555555;
+  cursor: not-allowed;
+}
+
+.toggle-view-button {
+  margin: 20px;
   padding: 10px;
   background-color: #e50914;
   color: #ffffff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-button:disabled {
-  background-color: #555555;
-  cursor: not-allowed;
+.toggle-view-button:hover {
+  background-color: #f40612;
 }
 </style>

@@ -1,15 +1,21 @@
 <template>
-    <div id="app">
-      <category-list-component :items="popularItems" />
-      <!-- 로딩 표시와 TOP 버튼 -->
-      <div v-if="isFetching" class="loading">Loading...</div>
-      <button v-if="showTopButton" @click="scrollToTop" class="top-button">TOP</button>
+    <div id="popular">
+      <div>
+        <button @click="goToTableView" class="toggle-view-button">
+          Switch to Table View
+        </button>
+        <component :is="currentView" :items="popularItems" />
+      </div>
+      <!-- 로딩 표시와 TOP 버튼 (무한 스크롤 모드일 때만 표시) -->
+      <div v-if="isFetching && !isTableView" class="loading">Loading...</div>
+      <button v-if="showTopButton && !isTableView" @click="scrollToTop" class="top-button">TOP</button>
     </div>
   </template>
   
   <script lang="ts">
   import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
   import CategoryListComponent from '../components/CategoryList.vue';
+  import { useRouter } from 'vue-router';
   
   // TMDb API 키 및 기본 URL 설정
   const API_KEY = '281dc9b971acbdf5c2a5787ded23f9b9';
@@ -25,6 +31,9 @@
       const currentPage = ref(1);
       const isFetching = ref(false);
       const showTopButton = ref(false);
+      const router = useRouter();
+  
+      const currentView = ref('CategoryListComponent');
   
       // 인기 영화를 가져오는 함수
       const fetchPopularMovies = async () => {
@@ -70,6 +79,11 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       };
   
+      // Table View로 이동하는 함수
+      const goToTableView = () => {
+        router.push('/popular/table');
+      };
+  
       // 컴포넌트가 마운트될 때 호출되는 함수
       onMounted(() => {
         // 초기 인기 영화 데이터를 가져옴
@@ -89,6 +103,8 @@
         isFetching,
         showTopButton,
         scrollToTop,
+        goToTableView,
+        currentView,
       };
     },
   });
@@ -96,7 +112,6 @@
   
   <style scoped>
   /* 기존 스타일 유지 */
-  
   .loading {
     position: fixed;
     bottom: 20px;
@@ -122,6 +137,20 @@
   
   .top-button:hover {
     background-color: #f40612;
+  }
+  
+  .toggle-view-button {
+    margin: 20px;
+    padding: 10px;
+    background-color: #141414;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .toggle-view-button:hover {
+    background-color: #333333;
   }
   </style>
   

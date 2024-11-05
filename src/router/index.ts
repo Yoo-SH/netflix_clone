@@ -1,35 +1,29 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import PopularView from '../views/PopularView.vue';
-import SearchView from '../views/SearchView.vue';
-import WishlistView from '../views/WishlistView.vue';
+import TableView from '../views/TableView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: HomeView,
   },
   {
     path: '/popular',
     name: 'popular',
-    component: PopularView
+    component: PopularView,
   },
   {
-    path: '/search',
-    name: 'search',
-    component: SearchView
+    path: '/popular/table',
+    name: 'table',
+    component: TableView,
   },
-  {
-    path: '/wishlist',
-    name: 'wishlist',
-    component: WishlistView
-  }
 ];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
+  routes,
 });
 
 export default router;

@@ -29,6 +29,7 @@
     padding: 1rem;
     background-color: #141414;
     color: #ffffff;
+    margin: 0;
   }
   
   .navbar-left,

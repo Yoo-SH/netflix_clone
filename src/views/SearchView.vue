@@ -1,5 +1,4 @@
 <template>
-  <button @click="goToHomeView" class="toggle-view-button">Go to Home View</button>
   <div class="filter-section">
     <!-- 필터 섹션은 변경 없음 -->
     <label>

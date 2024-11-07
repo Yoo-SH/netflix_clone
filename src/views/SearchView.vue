@@ -197,6 +197,7 @@ label {
   color: #c0392b;
 }
 
+
 select, input {
   margin-top: 5px;
   padding: 8px;
@@ -218,7 +219,7 @@ select:focus, input:focus {
 
 select option {
   padding: 10px;
-  background-color: white;
+  background-color: rgb(0, 0, 0);
   cursor: pointer;
   font-size: 16px;
   color: #c0392b;
@@ -292,5 +293,10 @@ select:hover {
 .infinite-scroll-target {
   height: 1px;
   background-color: transparent;
+}
+
+option{
+  background-color: #141414;
+  color: #ffffff;
 }
 </style>

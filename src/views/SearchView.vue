@@ -135,26 +135,26 @@ export default defineComponent({
       }
     };
 
-    const toggleLocalStorage = (movie: any) => {
-      let storedMovies = JSON.parse(localStorage.getItem('selectedMovies') || '[]');
-      const movieIndex = storedMovies.findIndex((storedMovie: any) => storedMovie.id === movie.id);
+      const toggleLocalStorage = (movie: any) => {
+        let storedMovies = JSON.parse(localStorage.getItem('selectedMovies') || '[]');
+        const movieIndex = storedMovies.findIndex((storedMovie: any) => storedMovie.id === movie.id);
 
-      if (movieIndex === -1) {
-        // 아이템이 로컬 스토리지에 없으면 추가
-        storedMovies.push({ id: movie.id, name: movie.title, image: `https://image.tmdb.org/t/p/w500${movie.poster_path}` });
-      } else {
-        // 아이템이 이미 로컬 스토리지에 있으면 제거
-        storedMovies.splice(movieIndex, 1);
-      }
+        if (movieIndex === -1) {
+          // 아이템이 로컬 스토리지에 없으면 추가
+          storedMovies.push({ id: movie.id, name: movie.title, image: `https://image.tmdb.org/t/p/w500${movie.poster_path}` });
+        } else {
+          // 아이템이 이미 로컬 스토리지에 있으면 제거
+          storedMovies.splice(movieIndex, 1);
+        }
 
-      localStorage.setItem('selectedMovies', JSON.stringify(storedMovies));
-      movies.value = [...movies.value]; // 반응성 트리거
-    };
+        localStorage.setItem('selectedMovies', JSON.stringify(storedMovies));
+        movies.value = [...movies.value]; // 반응성 트리거
+      };
 
-    const isItemInLocalStorage = (movie: any) => {
-      let storedMovies = JSON.parse(localStorage.getItem('selectedMovies') || '[]');
-      return storedMovies.some((storedMovie: any) => storedMovie.id === movie.id);
-    };
+      const isItemInLocalStorage = (movie: any) => {
+        let storedMovies = JSON.parse(localStorage.getItem('selectedMovies') || '[]');
+        return storedMovies.some((storedMovie: any) => storedMovie.id === movie.id);
+      };
 
     const scrollToTop = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });

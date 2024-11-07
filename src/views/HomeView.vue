@@ -1,5 +1,11 @@
 <template>
   <div id="home">
+    <!-- 네비게이션 바 -->
+    <div>
+      <button @click="goToWishlistView" class="toggle-view-button">
+        Go to Wishlist View
+      </button>
+    </div>
     <div v-if="isFetching" class="loading">Loading...</div>
     <button v-if="showTopButton" @click="scrollToTop" class="top-button">TOP</button>
 
@@ -11,11 +17,23 @@
           v-for="item in movies.data"
           :key="item.id"
           class="poster-container"
-          @click="showMovieDetails(item)"
+          @click="toggleMovieDetails(item)"
         >
           <img :src="item.image" alt="movie poster" class="poster-image" />
           <p class="poster-title">{{ item.name }}</p>
         </div>
+      </div>
+    </div>
+
+    <!-- 영화 상세 정보 모달 -->
+    <div v-if="selectedMovie" class="movie-details-modal" @click.self="closeMovieDetails">
+      <div class="movie-details-content">
+        <h2>{{ selectedMovie.name }}</h2>
+        <img :src="selectedMovie.image" alt="movie poster" class="details-poster-image" />
+        <p><strong>Description:</strong> {{ selectedMovie.description }}</p>
+        <p><strong>Rating:</strong> {{ selectedMovie.rating }}</p>
+        <p><strong>Genres:</strong> {{ selectedMovie.genre }}</p>
+        <button @click="closeMovieDetails" class="close-button">Close</button>
       </div>
     </div>
   </div>
@@ -35,6 +53,7 @@ export default defineComponent({
     const movieSections = ref<any[]>([]);
     const isFetching = ref(false);
     const showTopButton = ref(false);
+    const selectedMovie = ref<any | null>(null);
     const router = useRouter();
 
     const fetchMoviesFromAPI = async (endpoint: string, title: string) => {
@@ -42,7 +61,7 @@ export default defineComponent({
       try {
         const response = await fetch(url);
         const data = await response.json();
-        const movies = data.results.slice(0, 5).map((item: any) => ({
+        const movies = data.results.slice(0, 10).map((item: any) => ({
           id: item.id,
           name: item.title,
           image: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
@@ -89,9 +108,18 @@ export default defineComponent({
       router.push('/wishlist');
     };
 
-    // 영화 포스터 클릭 시 상세 정보 표시하는 함수
-    const showMovieDetails = (item: any) => {
-      alert(`Title: ${item.name}\nDescription: ${item.description}\nRating: ${item.rating}\nGenres: ${item.genre}`);
+    // 영화 포스터 클릭 시 상세 정보 표시 또는 숨기는 함수
+    const toggleMovieDetails = (item: any) => {
+      if (selectedMovie.value && selectedMovie.value.id === item.id) {
+        selectedMovie.value = null;
+      } else {
+        selectedMovie.value = item;
+      }
+    };
+
+    // 영화 상세 정보 모달 닫기 함수
+    const closeMovieDetails = () => {
+      selectedMovie.value = null;
     };
 
     // 컴포넌트가 마운트될 때 호출되는 함수
@@ -109,9 +137,11 @@ export default defineComponent({
       movieSections,
       isFetching,
       showTopButton,
+      selectedMovie,
       scrollToTop,
       goToWishlistView,
-      showMovieDetails,
+      toggleMovieDetails,
+      closeMovieDetails,
     };
   },
 });
@@ -193,7 +223,7 @@ export default defineComponent({
 }
 
 .poster-image {
-  width: 100%;
+  width: 80%;
   border-radius: 10px;
   transition: transform 0.3s;
   border: 2px solid transparent;
@@ -204,5 +234,36 @@ export default defineComponent({
   margin-top: 10px;
   text-align: center;
   font-size: 1em;
+}
+
+/******** 영화 상세 정보 모달 ********/
+.movie-details-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.movie-details-content {
+  background-color: #333;
+  padding: 20px;
+  border-radius: 10px;
+  color: #fff;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+}
+
+.details-poster-image {
+  width: 70%;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 20px;
 }
 </style>

@@ -48,7 +48,7 @@ export default defineComponent({
       try {
         const response = await fetch(url);
         const data = await response.json();
-        const movies = data.results.slice(0, 10).map((item: any) => ({
+        const movies = data.results.slice(0, 5).map((item: any) => ({
           id: item.id,
           name: item.title,
           image: `https://image.tmdb.org/t/p/w500${item.poster_path}`,

@@ -2,9 +2,9 @@
   <button @click="goToPopularView" class="toggle-view-button">Switch to Popular View</button>
   <div class="grid-view">
     <div class="grid-container">
-      <div v-for="item in paginatedItems" :key="item.id" class="grid-item">
+      <div v-for="item in paginatedItems" :key="item.id" class="grid-item" @click="toggleLocalStorage(item)">
         <div class="poster-image-wrapper">
-          <img :src="item.image" :alt="item.name" class="poster-image" v-if="item.image" />
+          <img :src="item.image" :alt="item.name" class="poster-image" :class="{'selected-poster': isItemInLocalStorage(item)}" v-if="item.image" />
           <div class="poster-title">{{ item.name }}</div>
         </div>
       </div>
@@ -143,6 +143,31 @@ export default defineComponent({
       router.push('/popular');
     };
 
+    // 로컬 스토리지에 포스터 데이터를 저장하거나 삭제하는 함수
+    const toggleLocalStorage = (item: Item) => {
+      let storedItems = JSON.parse(localStorage.getItem('selectedMovies') || '[]');
+      const itemIndex = storedItems.findIndex((storedItem: Item) => storedItem.id === item.id);
+
+      if (itemIndex === -1) {
+        // 아이템이 로컬 스토리지에 없으면 추가
+        storedItems.push(item);
+      } else {
+        // 아이템이 이미 로컬 스토리지에 있으면 제거
+        storedItems.splice(itemIndex, 1);
+      }
+
+      localStorage.setItem('selectedMovies', JSON.stringify(storedItems));
+      console.log('Updated localStorage:', storedItems);
+      // 배열을 다시 할당하여 반응성 트리거
+      popularItems.value = [...popularItems.value];
+    };
+
+    // 로컬 스토리지에 아이템이 있는지 확인하는 함수
+    const isItemInLocalStorage = (item: Item) => {
+      let storedItems = JSON.parse(localStorage.getItem('selectedMovies') || '[]');
+      return storedItems.some((storedItem: Item) => storedItem.id === item.id);
+    };
+
     onMounted(() => {
       fetchPopularMovies(true); // 초기 로드 시 8페이지 데이터 가져오기
     });
@@ -157,6 +182,8 @@ export default defineComponent({
       nextPage,
       popularItems,
       goToPopularView,
+      toggleLocalStorage,
+      isItemInLocalStorage,
     };
   },
 });
@@ -164,13 +191,14 @@ export default defineComponent({
 
 <style scoped>
 .grid-view {
-  margin: 0px;
+  margin-top: 50px;
   padding: 0;
   overflow: auto;
   background-color: #141414; /* 넷플릭스와 유사한 어두운 배경색으로 변경 */
 }
 
 .grid-container {
+  margin-top: 20px;
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   gap: 15px;
@@ -206,6 +234,11 @@ export default defineComponent({
   height: auto;
   border-radius: 5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  border: 2px solid transparent;
+}
+
+.selected-poster {
+  border-color: #e50914; /* 로컬 스토리지에 있는 경우 얇은 빨간 테두리 추가 */
 }
 
 .pagination {
@@ -235,36 +268,13 @@ export default defineComponent({
 }
 
 button {
-  padding: 10px 20px;
-  background-color: #e50914;
-  color: #ffffff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-button:hover {
-  background-color: #f40612;
-}
-
-button:disabled {
-  background-color: #555555;
-  cursor: not-allowed;
-}
-
-.toggle-view-button {
   margin: 20px;
   padding: 10px;
-  background-color: #e50914;
+  background-color: #f40612;
   color: #ffffff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
 }
 
-.toggle-view-button:hover {
-  background-color: #f40612;
-}
 </style>

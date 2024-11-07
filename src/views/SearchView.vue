@@ -205,7 +205,7 @@ export default defineComponent({
 
 <style scoped>
 .filter-section {
-  margin-top: 50px;
+  margin-top: 51px;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;

@@ -81,6 +81,8 @@ export default defineComponent({
       }
     };
 
+    
+
     // 스크롤 이벤트를 처리하는 함수
     const handleScroll = () => {
       // 스크롤 위치에 따라 TOP 버튼 표시 여부 설정

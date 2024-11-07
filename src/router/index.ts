@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue';
 import PopularView from '../views/PopularView.vue';
 import TableView from '../views/TableView.vue';
 import WishlistView from '../views/WishlistView.vue';
+import SearchView from '../views/SearchView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -24,6 +25,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/wishlist',
     name: 'wishlist',
     component: WishlistView
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: SearchView
   }
 ];
 

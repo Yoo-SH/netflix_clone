@@ -173,6 +173,7 @@
     border-radius: 10px;
     transition: transform 0.3s;
     border: 2px solid transparent;
+    border-color: #e50914; /* 로컬 스토리지에 있는 경우 얇은 빨간 테두리 추가 */
   }
   
   .selected-poster {

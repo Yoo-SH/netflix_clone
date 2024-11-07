@@ -23,7 +23,7 @@
           <!-- 영화 평점 -->
           <p><strong>Rating:</strong> {{ movie.rating }}</p>
           <!-- 영화 장르 -->
-          <p><strong>Genres:</strong> {{ movie.genre }}</p>
+          <p><strong>Genres:</strong> {{ getGenresByIds(movie.genre) }}</p>
           <!-- 모달 닫기 버튼, 클릭 시 closeMovieDetails 메소드가 호출됨 -->
           <button @click="closeMovieDetails" class="close-button">Close</button>
         </div>
@@ -46,6 +46,10 @@
     setup(props) {
       // showDetails는 모달의 표시 여부를 나타내는 상태값 (false일 때 모달 숨김)
       const showDetails = ref(false);
+
+         // 장르 목록을 저장하는 상태값
+        const genres = ref<any[]>([]);
+
   
       // toggleMovieDetails 함수는 showDetails 값을 반전시켜 모달을 열거나 닫음
       const toggleMovieDetails = () => {
@@ -56,11 +60,24 @@
       const closeMovieDetails = () => {
         showDetails.value = false;
       };
+
+
+    // 영화 장르 ID를 이름으로 변환하는 함수
+     const getGenresByIds = (genreIds: number[]) => {
+      return genreIds
+        .map(id => genres.value.find(genre => genre.id === id)?.name)
+        .filter(name => name) // 유효한 이름만 필터링
+        .join(', ');
+    };
+
+    
   
       return {
         showDetails,
         toggleMovieDetails,
         closeMovieDetails,
+        getGenresByIds
+    
       };
     },
   });

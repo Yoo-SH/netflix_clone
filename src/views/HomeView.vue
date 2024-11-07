@@ -1,11 +1,5 @@
 <template>
   <div id="home">
-    <!-- 네비게이션 바 -->
-    <div>
-      <button @click="goToWishlistView" class="toggle-view-button">
-        Go to Wishlist View
-      </button>
-    </div>
     <div v-if="isFetching" class="loading">Loading...</div>
     <button v-if="showTopButton" @click="scrollToTop" class="top-button">TOP</button>
 
@@ -56,7 +50,7 @@ export default defineComponent({
       try {
         const response = await fetch(url);
         const data = await response.json();
-        const movies = data.results.slice(0, 10).map((item: any) => ({
+        const movies = data.results.slice(0, 5).map((item: any) => ({
           id: item.id,
           name: item.title,
           image: `https://image.tmdb.org/t/p/w500${item.poster_path}`,

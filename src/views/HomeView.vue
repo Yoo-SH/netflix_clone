@@ -13,35 +13,27 @@
     <div class="movie-section" v-for="(movies, index) in movieSections" :key="index">
       <h2 class="section-title">{{ movies.title }}</h2>
       <div class="poster-list">
-        <div
+        <PosterComponent
           v-for="item in movies.data"
           :key="item.id"
-          class="poster-container"
-          @click="toggleMovieDetails(item)"
-        >
-          <img :src="item.image" alt="movie poster" class="poster-image" />
-          <p class="poster-title">{{ item.name }}</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- 영화 상세 정보 모달 -->
-    <div v-if="selectedMovie" class="movie-details-modal" @click.self="closeMovieDetails">
-      <div class="movie-details-content">
-        <h2>{{ selectedMovie.name }}</h2>
-        <img :src="selectedMovie.image" alt="movie poster" class="details-poster-image" />
-        <p><strong>Description:</strong> {{ selectedMovie.description }}</p>
-        <p><strong>Rating:</strong> {{ selectedMovie.rating }}</p>
-        <p><strong>Genres:</strong> {{ selectedMovie.genre }}</p>
-        <button @click="closeMovieDetails" class="close-button">Close</button>
+          :movie="item"
+          @toggle-movie-details="toggleMovieDetails"
+        />
       </div>
     </div>
   </div>
+
+  <PosterComponent
+    v-if="selectedMovie"
+    :movie="selectedMovie"
+    @close-movie-details="closeMovieDetails"
+  />
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
+import PosterComponent from '../components/Poster.vue';
 
 // TMDb API 키 및 기본 URL 설정
 const API_KEY = '281dc9b971acbdf5c2a5787ded23f9b9';
@@ -49,6 +41,9 @@ const BASE_URL = 'https://api.themoviedb.org/3'; // TMDb API 기본 URL
 
 export default defineComponent({
   name: 'HomeViewComponent',
+  components: {
+    PosterComponent,
+  },
   setup() {
     const movieSections = ref<any[]>([]);
     const isFetching = ref(false);

@@ -1,17 +1,17 @@
 <template>
     <div>
-      <!-- 포스터를 클릭할 수 있는 컨테이너. 클릭 시 toggleMovieDetails 메소드가 호출됨 -->
+      <!-- 포스터를 클릭할 수 있는 컨테이너. 클릭 시 toggleMovieDetails 및 toggleLocalStorage 메소드가 호출됨 -->
       <div
         class="poster-container"
-        @click="toggleMovieDetails"
+        @click="handlePosterClick"
       >
-        <!-- 영화 포스터 이미지. movie 객체의 image 속성을 바인딩하여 이미지 표시 -->
-        <img :src="movie.image" alt="movie poster" class="poster-image" />
-        <!-- 영화 제목. movie 객체의 name 속성을 바인딩하여 제목 표시 -->
+        <!-- 영화 포스터 이미지 -->
+        <img :src="movie.image" alt="movie poster" :class="['poster-image', { 'selected': isItemInLocalStorage(movie) }]" />
+        <!-- 영화 제목 -->
         <p class="poster-title">{{ movie.name }}</p>
       </div>
   
-      <!-- 영화 상세 정보 모달. showDetails가 true일 때만 표시되며, 모달 바깥을 클릭 시 closeMovieDetails 메소드가 호출됨 -->
+      <!-- 영화 상세 정보 모달 -->
       <div v-if="showDetails" class="movie-details-modal" @click.self="closeMovieDetails">
         <div class="movie-details-content">
           <!-- 영화 제목 -->
@@ -21,10 +21,10 @@
           <!-- 영화 설명 -->
           <p><strong>Description:</strong> {{ movie.description }}</p>
           <!-- 영화 평점 -->
-          <p><strong>Rating:</strong> {{ getGenresByIdsmovie.rating }}</p>
+          <p><strong>Rating:</strong> {{ movie.rating }}</p>
           <!-- 영화 장르 -->
-          <p><strong>Genres:</strong> {{ getGenresByIds(movie.genre) }}</p>
-          <!-- 모달 닫기 버튼, 클릭 시 closeMovieDetails 메소드가 호출됨 -->
+          <p><strong>Genres:</strong> {{ movie.genre }}</p>
+          <!-- 모달 닫기 버튼 -->
           <button @click="closeMovieDetails" class="close-button">Close</button>
         </div>
       </div>
@@ -32,7 +32,7 @@
   </template>
   
   <script lang="ts">
-  import { defineComponent, ref } from 'vue';
+  import { defineComponent, ref, onMounted } from 'vue';
   
   export default defineComponent({
     name: 'PosterComponent',
@@ -46,38 +46,68 @@
     setup(props) {
       // showDetails는 모달의 표시 여부를 나타내는 상태값 (false일 때 모달 숨김)
       const showDetails = ref(false);
-
-         // 장르 목록을 저장하는 상태값
-        const genres = ref<any[]>([]);
-
   
-      // toggleMovieDetails 함수는 showDetails 값을 반전시켜 모달을 열거나 닫음
+      /**
+       * 포스터 클릭 시 호출되는 함수
+       * - 모달을 토글
+       * - 로컬 스토리지에 영화 정보 저장 또는 제거
+       */
+      const handlePosterClick = () => {
+        toggleMovieDetails();
+        toggleLocalStorage(props.movie);
+      };
+  
+      // 모달을 열거나 닫는 함수
       const toggleMovieDetails = () => {
         showDetails.value = !showDetails.value;
       };
   
-      // closeMovieDetails 함수는 showDetails를 false로 설정해 모달을 닫음
+      // 모달을 닫는 함수
       const closeMovieDetails = () => {
         showDetails.value = false;
       };
-
-
-    // 영화 장르 ID를 이름으로 변환하는 함수
-     const getGenresByIds = (genreIds: number[]) => {
-      return genreIds
-        .map(id => genres.value.find(genre => genre.id === id)?.name)
-        .filter(name => name) // 유효한 이름만 필터링
-        .join(', ');
-    };
-
-    
+  
+      /**
+       * 로컬 스토리지에서 선택된 영화 목록을 토글하는 함수
+       * @param movie 선택된 영화 객체
+       */
+      const toggleLocalStorage = (movie: any) => {
+        let storedMovies = JSON.parse(localStorage.getItem('selectedMovies') || '[]');
+        const movieIndex = storedMovies.findIndex((storedMovie: any) => storedMovie.id === movie.id);
+  
+        if (movieIndex === -1) {
+          // 아이템이 로컬 스토리지에 없으면 추가
+          storedMovies.push({
+            id: movie.id,
+            name: movie.name,
+            image: movie.image,
+          });
+        } else {
+          // 아이템이 이미 로컬 스토리지에 있으면 제거
+          storedMovies.splice(movieIndex, 1);
+        }
+  
+        localStorage.setItem('selectedMovies', JSON.stringify(storedMovies));
+        // 반응성 트리거를 위해 업데이트 (필요 시 사용)
+      };
+  
+      /**
+       * 해당 영화가 로컬 스토리지에 저장되어 있는지 확인하는 함수
+       * @param movie 확인할 영화 객체
+       * @returns 저장 여부
+       */
+      const isItemInLocalStorage = (movie: any) => {
+        let storedMovies = JSON.parse(localStorage.getItem('selectedMovies') || '[]');
+        return storedMovies.some((storedMovie: any) => storedMovie.id === movie.id);
+      };
   
       return {
         showDetails,
         toggleMovieDetails,
         closeMovieDetails,
-        getGenresByIds
-    
+        toggleLocalStorage,
+        isItemInLocalStorage,
+        handlePosterClick,
       };
     },
   });
@@ -87,8 +117,9 @@
   /* 포스터 컨테이너 스타일 */
   .poster-container {
     position: relative;
-    transition: transform 0.3s;
+    transition: transform 0.3s, border 0.3s;
     cursor: pointer;
+    border: 2px solid transparent; /* 기본 테두리 */
   }
   
   /* 포스터 컨테이너에 마우스 올릴 때 확대 효과 */
@@ -96,12 +127,16 @@
     transform: scale(1.1);
   }
   
+  /* 선택된 포스터 이미지 스타일 */
+  .poster-image.selected {
+    border: 2px solid red; /* 선택된 경우 빨간 테두리 */
+  }
+  
   /* 포스터 이미지 스타일 */
   .poster-image {
     width: 100%;
     border-radius: 10px;
     transition: transform 0.3s;
-    border: 2px solid transparent;
   }
   
   /* 포스터 제목 스타일 */
@@ -114,16 +149,16 @@
   
   /* 모달 배경 스타일 - 화면 전체를 덮는 핵심 스타일 */
   .movie-details-modal {
-    position: fixed;  /* 화면에 고정되어 스크롤해도 위치 유지 */
-    top: 0;           /* 상단을 기준으로 시작 */
-    left: 0;          /* 좌측을 기준으로 시작 */
-    width: 100%;      /* 화면의 너비 전체를 덮음 */
-    height: 100%;     /* 화면의 높이 전체를 덮음 */
+    position: fixed; /* 화면에 고정되어 스크롤해도 위치 유지 */
+    top: 0; /* 상단을 기준으로 시작 */
+    left: 0; /* 좌측을 기준으로 시작 */
+    width: 100%; /* 화면의 너비 전체를 덮음 */
+    height: 100%; /* 화면의 높이 전체를 덮음 */
     background-color: rgba(0, 0, 0, 0.8); /* 배경을 어둡게 하여 모달이 강조되도록 함 */
-    display: flex;    /* 모달 내용을 가운데 정렬하기 위한 flexbox 사용 */
-    align-items: center;  /* 수직 방향으로 가운데 정렬 */
+    display: flex; /* 모달 내용을 가운데 정렬하기 위한 flexbox 사용 */
+    align-items: center; /* 수직 방향으로 가운데 정렬 */
     justify-content: center; /* 수평 방향으로 가운데 정렬 */
-    z-index: 2000;    /* 다른 요소보다 위에 표시되도록 높은 z-index 설정 */
+    z-index: 2000; /* 다른 요소보다 위에 표시되도록 높은 z-index 설정 */
     margin-bottom: 200px;
   }
   
@@ -135,6 +170,7 @@
     max-width: 400px; /* 모달의 최대 너비를 줄임 */
     width: 80%; /* 모달의 너비를 줄임 */
     text-align: center;
+    padding: 20px;
   }
   
   /* 상세 포스터 이미지 스타일 */
@@ -161,4 +197,3 @@
     background-color: #f40612;
   }
   </style>
-  

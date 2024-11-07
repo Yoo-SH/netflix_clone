@@ -252,8 +252,8 @@ select:hover {
 
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(8, 1fr); /* 한 줄에 8개 */
-  gap: 10px;
+  grid-template-columns: repeat(6, 1fr); /* 한 줄에 6개 */
+  gap: 20px;
   margin: 20px 0;
 }
 
@@ -273,6 +273,11 @@ select:hover {
   width: 100%;
   display: block;
   border-radius: 5px;
+  transition: transform 0.3s ease;
+}
+
+.poster-image-wrapper:hover .poster-image {
+  transform: scale(1.05);
 }
 
 .selected-poster {

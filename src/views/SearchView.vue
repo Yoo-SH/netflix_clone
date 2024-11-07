@@ -40,13 +40,9 @@
   <!-- 그리드 뷰 -->
   <div class="grid-view">
     <div class="grid-container">
-      <div v-for="movie in movies" :key="movie.id" class="grid-item">
-        <div class="poster-image-wrapper" @click="toggleLocalStorage(movie)">
-          <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" class="poster-image" :class="{'selected-poster': isItemInLocalStorage(movie)}" />
-          <div class="poster-title-overlay">
-            <div class="poster-title">{{ movie.title }}</div>
-          </div>
-        </div>
+      <div v-for="movie in movies" :key="movie.id" class="grid-item poster-container" @click="toggleLocalStorage(movie)">
+        <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" class="poster-image" :class="{'selected-poster': isItemInLocalStorage(movie)}" />
+        <p class="poster-title">{{ movie.title }}</p>
       </div>
     </div>
     <!-- 무한 스크롤을 위한 감시 요소 -->
@@ -257,44 +253,40 @@ select:hover {
   margin: 20px 0;
 }
 
-.grid-item {
+.poster-container {
   position: relative;
-  overflow: hidden;
+  transition: transform 0.3s;
+  cursor: pointer;
 }
 
-.poster-image-wrapper {
-  position: relative;
-  width: 100%;
-  height: auto;
-  cursor: pointer;
+.poster-container:hover {
+  transform: scale(1.1);
 }
 
 .poster-image {
   width: 100%;
-  display: block;
-  border-radius: 5px;
-  transition: transform 0.3s ease;
-}
-
-.poster-image-wrapper:hover .poster-image {
-  transform: scale(1.05);
+  border-radius: 10px;
+  transition: transform 0.3s;
+  border: 2px solid transparent;
 }
 
 .selected-poster {
-  border: 3px solid #e74c3c;
+  border-color: #e50914; /* 로컬 스토리지에 있는 경우 얇은 빨간 테두리 추가 */
 }
 
-.poster-title-overlay {
+.poster-title {
   position: absolute;
-  bottom: 0;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-  text-align: center;
-  padding: 5px;
-  box-sizing: border-box;
-  font-size: 0.9em;
-  border-radius: 0 0 5px 5px;
+  bottom: 10px;
+  left: 10px;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: color 0.3s;
+}
+
+.poster-container:hover .poster-title {
+  color: #ffffff; /* 글자 색상 변경 */
 }
 
 .infinite-scroll-target {

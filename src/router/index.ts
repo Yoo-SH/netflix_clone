@@ -6,7 +6,7 @@ import WishlistView from '../views/WishlistView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
+    path: '/home',
     name: 'home',
     component: HomeView,
   },

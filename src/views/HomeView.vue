@@ -1,11 +1,5 @@
 <template>
   <div id="home">
-    <!-- 네비게이션 바 -->
-    <div>
-      <button @click="goToWishlistView" class="toggle-view-button">
-        Go to Wishlist View
-      </button>
-    </div>
     <div v-if="isFetching" class="loading">Loading...</div>
     <button v-if="showTopButton" @click="scrollToTop" class="top-button">TOP</button>
 

@@ -223,7 +223,7 @@ export default defineComponent({
 }
 
 .poster-image {
-  width: 80%;
+  width: 60%;
   border-radius: 10px;
   transition: transform 0.3s;
   border: 2px solid transparent;
@@ -261,9 +261,23 @@ export default defineComponent({
 }
 
 .details-poster-image {
-  width: 70%;
+  width: 50%;
   height: auto;
   border-radius: 10px;
   margin-bottom: 20px;
+}
+
+.close-button {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #e50914;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  background-color: #f40612;
 }
 </style>

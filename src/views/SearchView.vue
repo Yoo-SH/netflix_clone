@@ -175,18 +175,42 @@ label {
   display: flex;
   flex-direction: column;
   font-weight: bold;
+  color: #c0392b;
 }
 
 select, input {
   margin-top: 5px;
   padding: 8px;
   border-radius: 5px;
-  border: 1px solid #ccc;
+  border: 1px solid #e74c3c;
+  background-color: #f8d7da;
   transition: border-color 0.3s ease;
 }
 
+select {
+  appearance: none;
+  cursor: pointer;
+}
+
 select:focus, input:focus {
-  border-color: #007bff;
+  border-color: #c0392b;
+  background-color: #fadbd8;
+}
+
+select option {
+  padding: 10px;
+  background-color: white;
+  cursor: pointer;
+  font-size: 16px;
+  color: #c0392b;
+}
+
+select option:hover {
+  background-color: #f5b7b1;
+}
+
+select:hover {
+  border-color: #c0392b;
 }
 
 .reset-button {
@@ -194,13 +218,13 @@ select:focus, input:focus {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  background-color: #6c757d;
+  background-color: #e74c3c;
   color: white;
   transition: background-color 0.3s ease;
 }
 
 .reset-button:hover {
-  background-color: #5a6268;
+  background-color: #c0392b;
 }
 
 .grid-container {

@@ -14,6 +14,7 @@
         :key="item.id"
         class="poster-container"
         @click="toggleLocalStorage(item)"
+        :class="{'selected-poster': isItemInLocalStorage(item)}"
       >
         <img :src="item.image" alt="movie poster" class="poster-image" />
         <p class="poster-title">{{ item.name }}</p>
@@ -23,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
+import { defineComponent, ref, onMounted, onBeforeUnmount, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 
 // TMDb API 키 및 기본 URL 설정
@@ -102,6 +103,14 @@ export default defineComponent({
 
       localStorage.setItem('selectedMovies', JSON.stringify(storedItems));
       console.log('Updated localStorage:', storedItems);
+      // 배열을 다시 할당하여 반응성 트리거
+      popularItems.value = [...popularItems.value];
+    };
+
+    // 로컬 스토리지에 아이템이 있는지 확인하는 함수
+    const isItemInLocalStorage = (item: any) => {
+      let storedItems = JSON.parse(localStorage.getItem('selectedMovies') || '[]');
+      return storedItems.some((storedItem: any) => storedItem.id === item.id);
     };
 
     // 컴포넌트가 마운트될 때 호출되는 함수
@@ -125,6 +134,7 @@ export default defineComponent({
       scrollToTop,
       goToTableView,
       toggleLocalStorage,
+      isItemInLocalStorage,
     };
   },
 });
@@ -192,6 +202,10 @@ export default defineComponent({
   transform: scale(1.1);
 }
 
+.poster-container.selected-poster {
+  border: 2px solid #e50914; /* 로컬 스토리지에 있는 경우 얇은 빨간 테두리 추가 */
+}
+
 .poster-image {
   width: 100%;
   border-radius: 10px;
@@ -213,4 +227,3 @@ export default defineComponent({
   color: #ffffff; /* 글자 색상 변경 */
 }
 </style>
-

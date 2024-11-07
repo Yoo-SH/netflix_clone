@@ -21,7 +21,7 @@
           <!-- 영화 설명 -->
           <p><strong>Description:</strong> {{ movie.description }}</p>
           <!-- 영화 평점 -->
-          <p><strong>Rating:</strong> {{ movie.rating }}</p>
+          <p><strong>Rating:</strong> {{ getGenresByIdsmovie.rating }}</p>
           <!-- 영화 장르 -->
           <p><strong>Genres:</strong> {{ getGenresByIds(movie.genre) }}</p>
           <!-- 모달 닫기 버튼, 클릭 시 closeMovieDetails 메소드가 호출됨 -->

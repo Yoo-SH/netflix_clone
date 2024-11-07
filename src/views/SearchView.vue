@@ -29,13 +29,16 @@
     <label>
       Sort By:
       <select v-model="sortBy">
-        <option value="popularity">Popularity</option>
-        <option value="rating">Rating</option>
+        <option value="popularity.asc">Popularity (Ascending)</option>
+        <option value="popularity.desc">Popularity (Descending)</option>
       </select>
     </label>
 
     <button @click="resetFilters" class="reset-button">Reset Filters</button>
   </div>
+
+  <!-- 로딩 표시 -->
+  <div v-if="isFetching" class="loading">Loading...</div>
 
   <!-- 그리드 뷰 -->
   <div class="grid-view">
@@ -48,6 +51,9 @@
     <!-- 무한 스크롤을 위한 감시 요소 -->
     <div ref="infiniteScrollTarget" class="infinite-scroll-target"></div>
   </div>
+
+  <!-- TOP 버튼 -->
+  <button v-if="showTopButton" @click="scrollToTop" class="top-button">TOP</button>
 </template>
 
 <script lang="ts">
@@ -67,6 +73,7 @@ export default defineComponent({
     const sortBy = ref<string>('popularity');
     const isFetching = ref(false);
     const currentPage = ref(1);
+    const showTopButton = ref(false);
     const router = useRouter();
     const infiniteScrollTarget = ref<HTMLElement | null>(null);
 
@@ -85,7 +92,7 @@ export default defineComponent({
         url += `&vote_average.gte=${minRating}&vote_average.lte=${maxRating}`;
       }
 
-      url += `&sort_by=${sortBy.value}.desc`;
+      url += `&sort_by=${sortBy.value}`;
 
       try {
         const response = await fetch(url);
@@ -150,6 +157,14 @@ export default defineComponent({
       return storedMovies.some((storedMovie: any) => storedMovie.id === movie.id);
     };
 
+    const scrollToTop = () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleScroll = () => {
+      showTopButton.value = window.scrollY > 200;
+    };
+
     onMounted(() => {
       fetchMovies();
       fetchGenres();
@@ -163,6 +178,12 @@ export default defineComponent({
       if (infiniteScrollTarget.value) {
         observer.observe(infiniteScrollTarget.value);
       }
+
+      window.addEventListener('scroll', handleScroll);
+    });
+
+    onBeforeUnmount(() => {
+      window.removeEventListener('scroll', handleScroll);
     });
 
     return {
@@ -176,6 +197,8 @@ export default defineComponent({
       infiniteScrollTarget,
       toggleLocalStorage,
       isItemInLocalStorage,
+      scrollToTop,
+      showTopButton,
     };
   },
 });
@@ -196,7 +219,6 @@ label {
   font-weight: bold;
   color: #c0392b;
 }
-
 
 select, input {
   margin-top: 5px;
@@ -247,6 +269,18 @@ select:hover {
   background-color: #c0392b;
 }
 
+.loading {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #ffffff;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 1000;
+}
+
 .grid-container {
   display: grid;
   grid-template-columns: repeat(6, 1fr); /* 한 줄에 6개 */
@@ -295,8 +329,20 @@ select:hover {
   background-color: transparent;
 }
 
-option{
-  background-color: #141414;
+.top-button {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  background-color: #e50914;
   color: #ffffff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1000; /* 다른 요소 위에 표시되도록 설정 */
+}
+
+.top-button:hover {
+  background-color: #f40612;
 }
 </style>

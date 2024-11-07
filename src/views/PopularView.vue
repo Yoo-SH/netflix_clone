@@ -227,4 +227,3 @@ export default defineComponent({
   color: #ffffff; /* 글자 색상 변경 */
 }
 </style>
-

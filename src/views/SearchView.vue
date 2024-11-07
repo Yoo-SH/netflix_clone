@@ -41,8 +41,8 @@
   <div class="grid-view">
     <div class="grid-container">
       <div v-for="movie in movies" :key="movie.id" class="grid-item">
-        <div class="poster-image-wrapper">
-          <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" class="poster-image" />
+        <div class="poster-image-wrapper" @click="toggleLocalStorage(movie)">
+          <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" class="poster-image" :class="{'selected-poster': isItemInLocalStorage(movie)}" />
           <div class="poster-title-overlay">
             <div class="poster-title">{{ movie.title }}</div>
           </div>
@@ -133,6 +133,27 @@ export default defineComponent({
       }
     };
 
+    const toggleLocalStorage = (movie: any) => {
+      let storedMovies = JSON.parse(localStorage.getItem('selectedMovies') || '[]');
+      const movieIndex = storedMovies.findIndex((storedMovie: any) => storedMovie.id === movie.id);
+
+      if (movieIndex === -1) {
+        // 아이템이 로컬 스토리지에 없으면 추가
+        storedMovies.push({ id: movie.id, name: movie.title, image: `https://image.tmdb.org/t/p/w500${movie.poster_path}` });
+      } else {
+        // 아이템이 이미 로컬 스토리지에 있으면 제거
+        storedMovies.splice(movieIndex, 1);
+      }
+
+      localStorage.setItem('selectedMovies', JSON.stringify(storedMovies));
+      movies.value = [...movies.value]; // 반응성 트리거
+    };
+
+    const isItemInLocalStorage = (movie: any) => {
+      let storedMovies = JSON.parse(localStorage.getItem('selectedMovies') || '[]');
+      return storedMovies.some((storedMovie: any) => storedMovie.id === movie.id);
+    };
+
     onMounted(() => {
       fetchMovies();
       fetchGenres();
@@ -157,6 +178,8 @@ export default defineComponent({
       isFetching,
       resetFilters,
       infiniteScrollTarget,
+      toggleLocalStorage,
+      isItemInLocalStorage,
     };
   },
 });
@@ -243,12 +266,17 @@ select:hover {
   position: relative;
   width: 100%;
   height: auto;
+  cursor: pointer;
 }
 
 .poster-image {
   width: 100%;
   display: block;
   border-radius: 5px;
+}
+
+.selected-poster {
+  border: 3px solid #e74c3c;
 }
 
 .poster-title-overlay {

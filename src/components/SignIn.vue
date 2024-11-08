@@ -22,7 +22,6 @@
 
 <script>
 import { defineComponent } from 'vue';
-
 export default defineComponent({
   name: 'SignInComponent',
   data() {
@@ -52,16 +51,18 @@ export default defineComponent({
         return;
       }
 
-      // 예시를 위한 로그인 성공 가정
-      if (this.email === 'test@example.com' && this.password === 'password') {
-        // 회원가입 성공 시 이메일과 비밀번호를 localStorage에 저장
-        localStorage.setItem('email', this.email);
-        localStorage.setItem('password', this.password);
+      // 로컬스토리지에 저장된 이메일과 비밀번호 배열 중 입력 이메일과 비밀번호와 일치하는지 확인
+      let users = JSON.parse(localStorage.getItem('userCredentials'));
+      if (!Array.isArray(users)) {
+        users = [];
+      }
 
+      const userExists = users.some(user => user.email === this.email && user.password === this.password);
+
+      if (userExists) {
         if (this.rememberMe) {
-          // rememberMe가 체크된 경우, 이메일과 비밀번호를 localStorage에서 가져와 email과 비밀번호 필드에 입력
-          this.email = localStorage.getItem('email') || '';
-          this.password = localStorage.getItem('password') || '';
+          // rememberMe가 체크된 경우, 이메일과 비밀번호를 localStorage에 저장
+          localStorage.setItem('rememberedUser', JSON.stringify({ email: this.email, password: this.password }));
         }
         this.$emit('login-success');
       } else {
@@ -75,88 +76,88 @@ export default defineComponent({
 <style scoped>
 /* 전체 폼 스타일 */
 .signin-form {
-display: flex;
-justify-content: center;
-align-items: center;
-min-height: 100vh;
-background-color: #141414;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #141414;
 }
 
 /* 로그인 폼 컨테이너 스타일 */
 .signin-container {
-width: 300px;
-padding: 40px;
-background-color: #000;
-border-radius: 8px;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-color: #fff;
+  width: 300px;
+  padding: 40px;
+  background-color: #000;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  color: #fff;
 }
 
 /* 제목 스타일 */
 .signin-title {
-font-size: 24px;
-font-weight: bold;
-margin-bottom: 20px;
-text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 /* 입력 필드 스타일 */
 .signin-input {
-width: 100%;
-padding: 10px;
-margin: 10px 0;
-border: 1px solid #333;
-border-radius: 4px;
-background-color: #333;
-color: #fff;
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background-color: #333;
+  color: #fff;
 }
 
 /* Remember me 스타일 */
 .signin-remember {
-display: flex;
-align-items: center;
-margin-bottom: 20px;
-font-size: 14px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 14px;
 }
 
 /* 로그인 버튼 스타일 */
 .signin-button {
-width: 100%;
-padding: 10px;
-background-color: #e50914;
-color: #fff;
-border: none;
-border-radius: 4px;
-font-size: 16px;
-cursor: pointer;
-margin-bottom: 10px;
+  width: 100%;
+  padding: 10px;
+  background-color: #e50914;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 10px;
 }
 
 .signin-button:hover {
-background-color: #f6121d;
+  background-color: #f6121d;
 }
 
 /* 회원가입 버튼 스타일 */
 .signup-button {
-width: 100%;
-padding: 10px;
-background-color: #333;
-color: #fff;
-border: none;
-border-radius: 4px;
-font-size: 16px;
-cursor: pointer;
+  width: 100%;
+  padding: 10px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 .signup-button:hover {
-background-color: #444;
+  background-color: #444;
 }
 
 /* 오류 메시지 스타일 */
 .error {
-color: #e50914;
-font-size: 14px;
-margin-top: 10px;
-display: block;
+  color: #e50914;
+  font-size: 14px;
+  margin-top: 10px;
+  display: block;
 }
 </style>

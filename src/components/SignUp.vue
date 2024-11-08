@@ -68,9 +68,24 @@ export default defineComponent({
         return;
       }
 
-      // 회원가입 성공 시 이메일과 비밀번호를 localStorage에 저장
-      localStorage.setItem('email', this.email);
-      localStorage.setItem('password', this.password);
+      // 회원가입 성공 시 이메일과 비밀번호를 객체로 묶어서 localStorage의 배열에 저장
+      const userCredentials = {
+        email: this.email,
+        password: this.password
+      };
+      let users = JSON.parse(localStorage.getItem('userCredentials'));
+      if (!Array.isArray(users)) {
+        users = [];
+      }
+
+      // 이메일 중복 체크
+      if (users.some(user => user.email === this.email)) {
+        this.errorMessage = 'Email is already registered.';
+        return;
+      }
+
+      users.push(userCredentials);
+      localStorage.setItem('userCredentials', JSON.stringify(users));
 
       // 회원가입 성공 가정 및 부모 컴포넌트로 이벤트 전파
       this.$emit('signup-success');
@@ -82,88 +97,88 @@ export default defineComponent({
 <style scoped>
 /* 전체 폼 스타일 */
 .signup-form {
-display: flex;
-justify-content: center;
-align-items: center;
-min-height: 100vh;
-background-color: #141414;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #141414;
 }
 
 /* 회원가입 폼 컨테이너 스타일 */
 .signup-container {
-width: 300px;
-padding: 40px;
-background-color: #000;
-border-radius: 8px;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-color: #fff;
+  width: 300px;
+  padding: 40px;
+  background-color: #000;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  color: #fff;
 }
 
 /* 제목 스타일 */
 .signup-title {
-font-size: 24px;
-font-weight: bold;
-margin-bottom: 20px;
-text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 /* 입력 필드 스타일 */
 .signup-input {
-width: 100%;
-padding: 10px;
-margin: 10px 0;
-border: 1px solid #333;
-border-radius: 4px;
-background-color: #333;
-color: #fff;
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background-color: #333;
+  color: #fff;
 }
 
 /* 약관 동의 스타일 */
 .signup-terms {
-display: flex;
-align-items: center;
-margin-bottom: 20px;
-font-size: 14px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 14px;
 }
 
 /* 회원가입 버튼 스타일 */
 .signup-button {
-width: 100%;
-padding: 10px;
-background-color: #e50914;
-color: #fff;
-border: none;
-border-radius: 4px;
-font-size: 16px;
-cursor: pointer;
-margin-bottom: 10px;
+  width: 100%;
+  padding: 10px;
+  background-color: #e50914;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 10px;
 }
 
 .signup-button:hover {
-background-color: #f6121d;
+  background-color: #f6121d;
 }
 
 /* 로그인 버튼 스타일 */
 .signin-button {
-width: 100%;
-padding: 10px;
-background-color: #333;
-color: #fff;
-border: none;
-border-radius: 4px;
-font-size: 16px;
-cursor: pointer;
+  width: 100%;
+  padding: 10px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 .signin-button:hover {
-background-color: #444;
+  background-color: #444;
 }
 
 /* 오류 메시지 스타일 */
 .error {
-color: #e50914;
-font-size: 14px;
-margin-top: 10px;
-display: block;
+  color: #e50914;
+  font-size: 14px;
+  margin-top: 10px;
+  display: block;
 }
 </style>

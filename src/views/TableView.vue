@@ -203,8 +203,8 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
 .grid-view {
-  margin-top: 30px; /* 기존 50px에서 줄임 */
   padding: 0;
   overflow: hidden; /* 스크롤 제거 */
   background-color: #141414;
@@ -215,8 +215,8 @@ export default defineComponent({
   display: grid;
   grid-template-columns: repeat(10, 1fr); /* 기존 8에서 10으로 늘림 */
   gap: 10px; /* 기존 15px에서 줄임 */
-  margin-bottom: 15px; /* 기존 20px에서 줄임 */
   padding: 0 30px; /* 기존 50px에서 줄임 */
+  overflow: hidden; /* 스크롤 제거 */
 }
 
 .grid-item {
@@ -266,6 +266,7 @@ export default defineComponent({
 .page-number:hover {
   background-color: #333333;
   border-radius: 3px; /* 기존 5px에서 줄임 */
+  cursor: pointer;
 }
 
 .page-number.active {
@@ -285,6 +286,6 @@ button {
 }
 
 #table-view {
-  overflow-y: hidden; /* 스크롤 제거 */
+  overflow-y: hidden !important;
 }
 </style>

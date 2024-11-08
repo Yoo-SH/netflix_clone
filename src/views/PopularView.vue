@@ -6,7 +6,7 @@
       </button>
     </div>
     <div v-if="isFetching && !isTableView" class="loading">Loading...</div>
-    <button v-if="showTopButton && !isTableView" @click="scrollToTop" class="top-button">TOP</button>
+    <button v-if="!isTableView" @click="scrollToTop" class="top-button">TOP</button>
     <!-- 포스터 리스트 추가 -->
     <div class="poster-list">
       <div
@@ -37,7 +37,7 @@ export default defineComponent({
     const popularItems = ref<any[]>([]);
     const currentPage = ref(1);
     const isFetching = ref(false);
-    const showTopButton = ref(false);
+    const showTopButton = ref(true);
     const router = useRouter();
     const infiniteScrollTarget = ref<HTMLElement | null>(null);
 
@@ -85,6 +85,7 @@ export default defineComponent({
 
     // TOP 버튼 클릭 시 화면 맨 위로 스크롤하는 함수
     const scrollToTop = () => {
+      console.log('Scroll to top button clicked');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -119,9 +120,7 @@ export default defineComponent({
     };
 
     // 스크롤 이벤트 처리 함수
-    const handleScroll = () => {
-      showTopButton.value = window.scrollY > 200;
-    };
+    
 
     // 컴포넌트가 마운트될 때 호출되는 함수
     onMounted(() => {
@@ -140,13 +139,13 @@ export default defineComponent({
       }
 
       // 스크롤 이벤트 리스너 추가
-      window.addEventListener('scroll', handleScroll);
+      
     });
 
     // 컴포넌트가 언마운트될 때 호출되는 함수
     onBeforeUnmount(() => {
       // 스크롤 이벤트 리스너 제거
-      window.removeEventListener('scroll', handleScroll);
+      
     });
 
     return {

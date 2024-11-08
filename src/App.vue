@@ -29,7 +29,7 @@ export default defineComponent({
 
 <style>
 /* 기존 스타일 유지 */
-html, body, #app {
+ body {
   background-color: #141414;
   margin: 0;
   padding: 0;
@@ -38,12 +38,5 @@ html, body, #app {
   overflow-x: hidden; /* 수평 스크롤 방지 */
 }
 
-#app {
-  height: 100%;
-  width: 100%;
-  max-width: 100%;
-  padding: 0;
-  margin: 0;
-  overflow-x: hidden; /* 수평 스크롤 방지 */
-}
+
 </style>

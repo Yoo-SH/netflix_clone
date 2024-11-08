@@ -32,6 +32,15 @@ export default defineComponent({
       errorMessage: ''
     };
   },
+  created() {
+    // rememberMe가 체크되어 있는 경우, 이메일과 비밀번호를 input에 미리 넣어줌
+    const rememberedUser = JSON.parse(localStorage.getItem('rememberedUser'));
+    if (rememberedUser) {
+      this.email = rememberedUser.email;
+      this.password = rememberedUser.password;
+      this.rememberMe = true;
+    }
+  },
   computed: {
     // 이메일이 유효한지 검사하는 계산 속성
     validEmail() {
@@ -62,10 +71,11 @@ export default defineComponent({
       if (userExists) {
         // 로그인 성공 시, authUser 객체에 이메일과 비밀번호 저장
         localStorage.setItem('authUser', JSON.stringify({ email: this.email, password: this.password }));
-
         if (this.rememberMe) {
           // rememberMe가 체크된 경우, 이메일과 비밀번호를 localStorage에 저장
           localStorage.setItem('rememberedUser', JSON.stringify({ email: this.email, password: this.password }));
+        } else {
+          localStorage.removeItem('rememberedUser');
         }
         this.$emit('login-success');
       } else {

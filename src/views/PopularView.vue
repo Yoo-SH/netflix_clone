@@ -40,7 +40,7 @@ export default defineComponent({
 
     // API 키 가져오는 함수
     const getApiKeyFromLocalStorage = () => {
-      const rememberedUser = JSON.parse(localStorage.getItem('rememberedUser') || '{}');
+      const rememberedUser = JSON.parse(localStorage.getItem('authUser') || '{}');
       return rememberedUser.password || '';
     };
 

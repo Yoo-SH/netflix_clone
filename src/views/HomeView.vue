@@ -30,7 +30,6 @@ import { useRouter } from 'vue-router';
 import PosterComponent from '../components/Poster.vue';
 
 // TMDb API 키 및 기본 URL 설정
-const API_KEY = '281dc9b971acbdf5c2a5787ded23f9b9';
 const BASE_URL = 'https://api.themoviedb.org/3'; // TMDb API 기본 URL
 
 export default defineComponent({
@@ -44,6 +43,14 @@ export default defineComponent({
     const showTopButton = ref(false);
     const selectedMovie = ref<any | null>(null);
     const router = useRouter();
+    // API 키 가져오는 함수
+    const getApiKeyFromLocalStorage = () => {
+      const rememberedUser = JSON.parse(localStorage.getItem('rememberedUser') || '{}');
+      return rememberedUser.password || '';
+    };
+
+    const API_KEY = getApiKeyFromLocalStorage();
+
 
     const fetchMoviesFromAPI = async (endpoint: string, title: string) => {
       const url = `${BASE_URL}/${endpoint}?api_key=${API_KEY}&language=ko-KR&page=1`;

@@ -59,7 +59,6 @@
 import { defineComponent, ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
-const API_KEY = '281dc9b971acbdf5c2a5787ded23f9b9';
 const BASE_URL = 'https://api.themoviedb.org/3';
 
 export default defineComponent({
@@ -76,9 +75,17 @@ export default defineComponent({
     const router = useRouter();
     const infiniteScrollTarget = ref<HTMLElement | null>(null);
 
+    // API 키 가져오는 함수
+    const getApiKeyFromLocalStorage = () => {
+      const rememberedUser = JSON.parse(localStorage.getItem('rememberedUser') || '{}');
+      return rememberedUser.password || '';
+    };
+
     const fetchMovies = async (page = 1) => {
       if (isFetching.value) return;
       isFetching.value = true;
+
+      const API_KEY = getApiKeyFromLocalStorage();
 
       let url = `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=ko-KR&page=${page}`;
 
@@ -105,6 +112,7 @@ export default defineComponent({
     };
 
     const fetchGenres = async () => {
+      const API_KEY = getApiKeyFromLocalStorage();
       const url = `${BASE_URL}/genre/movie/list?api_key=${API_KEY}&language=ko-KR`;
       try {
         const response = await fetch(url);
@@ -135,26 +143,26 @@ export default defineComponent({
       }
     };
 
-      const toggleLocalStorage = (movie: any) => {
-        let storedMovies = JSON.parse(localStorage.getItem('selectedMovies') || '[]');
-        const movieIndex = storedMovies.findIndex((storedMovie: any) => storedMovie.id === movie.id);
+    const toggleLocalStorage = (movie: any) => {
+      let storedMovies = JSON.parse(localStorage.getItem('selectedMovies') || '[]');
+      const movieIndex = storedMovies.findIndex((storedMovie: any) => storedMovie.id === movie.id);
 
-        if (movieIndex === -1) {
-          // 아이템이 로컬 스토리지에 없으면 추가
-          storedMovies.push({ id: movie.id, name: movie.title, image: `https://image.tmdb.org/t/p/w500${movie.poster_path}` });
-        } else {
-          // 아이템이 이미 로컬 스토리지에 있으면 제거
-          storedMovies.splice(movieIndex, 1);
-        }
+      if (movieIndex === -1) {
+        // 아이템이 로컬 스토리지에 없으면 추가
+        storedMovies.push({ id: movie.id, name: movie.title, image: `https://image.tmdb.org/t/p/w500${movie.poster_path}` });
+      } else {
+        // 아이템이 이미 로컬 스토리지에 있으면 제거
+        storedMovies.splice(movieIndex, 1);
+      }
 
-        localStorage.setItem('selectedMovies', JSON.stringify(storedMovies));
-        movies.value = [...movies.value]; // 반응성 트리거
-      };
+      localStorage.setItem('selectedMovies', JSON.stringify(storedMovies));
+      movies.value = [...movies.value]; // 반응성 트리거
+    };
 
-      const isItemInLocalStorage = (movie: any) => {
-        let storedMovies = JSON.parse(localStorage.getItem('selectedMovies') || '[]');
-        return storedMovies.some((storedMovie: any) => storedMovie.id === movie.id);
-      };
+    const isItemInLocalStorage = (movie: any) => {
+      let storedMovies = JSON.parse(localStorage.getItem('selectedMovies') || '[]');
+      return storedMovies.some((storedMovie: any) => storedMovie.id === movie.id);
+    };
 
     const scrollToTop = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });

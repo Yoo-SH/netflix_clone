@@ -348,7 +348,7 @@ select:hover {
   padding: 10px 15px;
   border-radius: 5px;
   cursor: pointer;
-  z-index: 1000; /* 다른 요소 위에 표시되도록 설정 */
+  z-index: 2000; /* 다른 요소 위에 표시되도록 설정 */
 }
 
 .top-button:hover {

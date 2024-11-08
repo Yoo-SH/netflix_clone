@@ -1,6 +1,6 @@
 <template>
+    <div v-if="isFetching" class="loading">Loading...</div>
     <div id="wishlist">
-      <div v-if="isFetching" class="loading">Loading...</div>
       <button v-if="showTopButton" @click="scrollToTop" class="top-button">TOP</button>
       <!-- 포스터 리스트 추가 -->
       <div class="poster-list">

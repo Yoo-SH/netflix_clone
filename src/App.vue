@@ -27,18 +27,16 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style>
 /* 기존 스타일 유지 */
 html, body, #app {
   background-color: #141414;
   margin: 0;
   padding: 0;
-  width: 120%;
-  height: 120%;
+  width: 100%;
+  height: 100%;
   overflow-x: hidden; /* 수평 스크롤 방지 */
 }
-
-
 
 #app {
   height: 100%;

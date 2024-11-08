@@ -153,9 +153,9 @@ export default defineComponent({
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.8);
-  color: #ffffff;
-  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #000000;
+  padding: 50px;
   border-radius: 5px;
   z-index: 1000; /* 다른 요소 위에 표시되도록 설정 */
 }

@@ -4,6 +4,7 @@ import PopularView from '../views/PopularView.vue';
 import TableView from '../views/TableView.vue';
 import WishlistView from '../views/WishlistView.vue';
 import SearchView from '../views/SearchView.vue';
+import SignView from '../views/SignView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -29,8 +30,13 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/search',
     name: 'search',
-    component: SearchView
-  }
+    component: SearchView,
+  },
+  {
+    path: '/sign',
+    name: 'sign',
+    component: SignView,
+  },
 ];
 
 const router = createRouter({

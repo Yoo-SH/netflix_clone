@@ -23,11 +23,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onBeforeUnmount, watchEffect } from 'vue';
+import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 
-// TMDb API 키 및 기본 URL 설정
-const API_KEY = '281dc9b971acbdf5c2a5787ded23f9b9';
+// TMDb API 기본 URL 설정
 const BASE_URL = 'https://api.themoviedb.org/3'; // TMDb API 기본 URL
 
 export default defineComponent({
@@ -38,6 +37,14 @@ export default defineComponent({
     const isFetching = ref(false);
     const showTopButton = ref(false);
     const router = useRouter();
+
+    // API 키 가져오는 함수
+    const getApiKeyFromLocalStorage = () => {
+      const rememberedUser = JSON.parse(localStorage.getItem('authUser') || '{}');
+      return rememberedUser.password || '';
+    };
+
+    const API_KEY = getApiKeyFromLocalStorage();
 
     const fetchPopularMovies = async () => {
       if (isFetching.value) return;

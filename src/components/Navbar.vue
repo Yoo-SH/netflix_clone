@@ -7,7 +7,7 @@
         <router-link to="/wishlist" class="nav-item">Wishlist</router-link>
       </div>
       <div class="navbar-right">
-        <router-link to="/mypage" class="nav-item">My Page</router-link>
+        <router-link to="/Sign" class="nav-item">Sign</router-link>
       </div>
     </nav>
   </template>

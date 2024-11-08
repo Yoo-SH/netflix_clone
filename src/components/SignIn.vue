@@ -3,9 +3,9 @@
   <div class="signin-form">
     <div class="signin-container">
       <h2 class="signin-title">Login</h2>
-      <input type="email" v-model="email" class="signin-input" placeholder="Enter your email" />
       <!-- 이메일이 유효하지 않을 경우 오류 메시지 출력 -->
       <span v-if="!validEmail" class="error">Invalid email address</span>
+      <input type="email" v-model="email" class="signin-input" placeholder="Enter your email" />
       <input type="password" v-model="password" class="signin-input" placeholder="Enter your password" />
       <div class="signin-remember">
         <!-- 로그인 시 아이디와 비밀번호를 기억할지 여부 선택 -->
@@ -60,6 +60,9 @@ export default defineComponent({
       const userExists = users.some(user => user.email === this.email && user.password === this.password);
 
       if (userExists) {
+        // 로그인 성공 시, authUser 객체에 이메일과 비밀번호 저장
+        localStorage.setItem('authUser', JSON.stringify({ email: this.email, password: this.password }));
+
         if (this.rememberMe) {
           // rememberMe가 체크된 경우, 이메일과 비밀번호를 localStorage에 저장
           localStorage.setItem('rememberedUser', JSON.stringify({ email: this.email, password: this.password }));

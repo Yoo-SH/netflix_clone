@@ -20,32 +20,26 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { useAuthStore } from '../store/auth';
+import { storeToRefs } from 'pinia';
 
 export default defineComponent({
   name: 'NavbarComponent',
-  data() {
+  setup() {
+    const authStore = useAuthStore();
+    const { isAuthenticated } = storeToRefs(authStore);
+    const { logout } = authStore;
+
     return {
-      isAuthenticated: false,
+      isAuthenticated,
+      logout,
     };
-  },
-  mounted() {
-    // Check if authUser exists in localStorage
-    const authUser = localStorage.getItem('authUser');
-    if (authUser) {
-      this.isAuthenticated = true;
-    }
-  },
-  methods: {
-    logout() {
-      // Remove authUser from localStorage and set isAuthenticated to false
-      localStorage.removeItem('authUser');
-      this.isAuthenticated = false;
-    },
   },
 });
 </script>
 
 <style scoped>
+/* 기존의 스타일 그대로 유지 */
 .navbar {
   display: flex;
   justify-content: space-between;

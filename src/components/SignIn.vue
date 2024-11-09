@@ -22,6 +22,8 @@
 
 <script>
 import { defineComponent } from 'vue';
+import { useAuthStore } from '../store/auth';
+
 export default defineComponent({
   name: 'SignInComponent',
   data() {
@@ -69,8 +71,9 @@ export default defineComponent({
       const userExists = users.some(user => user.email === this.email && user.password === this.password);
 
       if (userExists) {
-        // 로그인 성공 시, authUser 객체에 이메일과 비밀번호 저장
-        localStorage.setItem('authUser', JSON.stringify({ email: this.email, password: this.password }));
+        // 전역변수로 사용할 authStore 객체 가져와서 넣기. 로컬스토리지에도 저장됨.
+        const authStore = useAuthStore();
+        authStore.login({ email: this.email, password: this.password });
         if (this.rememberMe) {
           // rememberMe가 체크된 경우, 이메일과 비밀번호를 localStorage에 저장
           localStorage.setItem('rememberedUser', JSON.stringify({ email: this.email, password: this.password }));

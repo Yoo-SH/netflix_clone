@@ -13,7 +13,10 @@
     </div>
     <div class="navbar-right">
       <router-link v-if="!isAuthenticated" to="/Sign" class="nav-item sign-button">Sign</router-link>
-      <router-link v-else @click="logout" to="/Sign" class="nav-item logout-button">Logout</router-link>
+      <div v-else class="nav-item">
+        <span class="user-email">{{ userEmail }}</span>
+      <router-link @click="logout" to="/Sign" class="nav-item logout-button">Logout</router-link>
+    </div>
     </div>
   </nav>
 </template>
@@ -27,11 +30,12 @@ export default defineComponent({
   name: 'NavbarComponent',
   setup() {
     const authStore = useAuthStore();
-    const { isAuthenticated } = storeToRefs(authStore);
+    const { isAuthenticated, user } = storeToRefs(authStore);
     const { logout } = authStore;
 
     return {
       isAuthenticated,
+      userEmail: user?.value?.email || '',
       logout,
     };
   },
@@ -57,9 +61,10 @@ export default defineComponent({
 }
 
 .nav-item {
-  text-decoration: none;
   color: #ffffff;
   font-weight: bold;
+  text-decoration: none;
+
 }
 
 .nav-item:hover {
@@ -103,5 +108,10 @@ export default defineComponent({
 .logout-button:hover {
   background-color: #e50914;
   color: #ffffff;
+}
+
+.user-email{
+  margin-right: 1rem;
+  font-weight: bold;
 }
 </style>

@@ -30,7 +30,7 @@
       },
       // 로그인 성공 시 홈 화면으로 이동하는 메서드
       navigateHome() {
-        this.$router.push('/home');
+        this.$router.push('/');
       },
       // 회원가입 성공 시 로그인 화면으로 전환하는 메서드
       navigateSignin() {

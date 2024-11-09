@@ -1,4 +1,5 @@
 <template>
+  <div id="table-view">
   <button @click="goToPopularView" class="toggle-view-button">Switch to Popular View</button>
   <div class="grid-view">
     <div class="grid-container">
@@ -17,6 +18,7 @@
       <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages">Next</button>
     </div>
   </div>
+</div>
 </template>
 
 <script lang="ts">
@@ -40,7 +42,7 @@ export default defineComponent({
   setup(props) {
     const popularItems = ref<Item[]>([]);
     const currentPage = ref(1);
-    const itemsPerPage = 16;
+    const itemsPerPage = 20;
     const isFetching = ref(false);
     const router = useRouter();
 
@@ -72,17 +74,28 @@ export default defineComponent({
 
       return pages;
     });
+
+    
+    const getApiKeyFromLocalStorage = () => {
+            const rememberedUser = JSON.parse(localStorage.getItem('authUser') || '{}');
+          return rememberedUser.password || '';
+          };
+
+    const API_KEY = getApiKeyFromLocalStorage();
+
     
     const fetchPopularMovies = async (initialLoad = false) => {
       if (isFetching.value) return;
       isFetching.value = true;
 
-      const API_KEY = '281dc9b971acbdf5c2a5787ded23f9b9';
       const BASE_URL = 'https://api.themoviedb.org/3';
       try {
         if (initialLoad) {
+
           // 초기 8페이지까지의 데이터를 한 번에 가져옴
           for (let page = 1; page <= 8; page++) {
+              // API 키 가져오는 함수
+            
             const url = `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=ko-KR&page=${page}`;
             const response = await fetch(url);
             const data = await response.json();
@@ -190,76 +203,70 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
 .grid-view {
-  margin-top: 50px;
   padding: 0;
-  overflow: auto;
-  background-color: #141414; /* 넷플릭스와 유사한 어두운 배경색으로 변경 */
+  overflow: hidden; /* 스크롤 제거 */
+  background-color: #141414;
 }
 
 .grid-container {
-  margin-top: 20px;
+  margin-top: 10px; /* 기존 20px에서 줄임 */
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 15px;
-  margin-bottom: 20px;
-  padding: 0 50px;
+  grid-template-columns: repeat(10, 1fr); /* 기존 8에서 10으로 늘림 */
+  gap: 10px; /* 기존 15px에서 줄임 */
+  padding: 0 30px; /* 기존 50px에서 줄임 */
+  overflow: hidden; /* 스크롤 제거 */
 }
 
 .grid-item {
-  transition: transform 0.3s;
+  transition: transform 0.2s; /* 기존 0.3s에서 줄임 */
 }
 
 .grid-item:hover {
-  transform: scale(1.05);
-}
-
-.poster-image-wrapper {
-  position: relative;
+  transform: scale(1.03); /* 기존 1.05에서 줄임 */
 }
 
 .poster-title {
   position: absolute;
-  bottom: 10px;
-  left: 10px;
-  color: #ffffff;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 5px;
-  border-radius: 5px;
-  font-size: 1em;
+  bottom: 5px; /* 기존 10px에서 줄임 */
+  left: 5px; /* 기존 10px에서 줄임 */
+  font-size: 0.8em; /* 기존 1em에서 줄임 */
+  padding: 3px; /* 기존 5px에서 줄임 */
+  border-radius: 3px; /* 기존 5px에서 줄임 */
 }
 
 .poster-image {
   width: 100%;
   height: auto;
-  border-radius: 5px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-  border: 2px solid transparent;
+  border-radius: 3px; /* 기존 5px에서 줄임 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4); /* 기존 0 4px 8px에서 줄임 */
+  border: 1px solid transparent; /* 기존 2px에서 줄임 */
 }
 
 .selected-poster {
-  border-color: #e50914; /* 로컬 스토리지에 있는 경우 얇은 빨간 테두리 추가 */
+  border-color: #e50914;
 }
 
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  margin-top: 30px;
+  gap: 5px; /* 기존 10px에서 줄임 */
+  margin-top: 20px; /* 기존 30px에서 줄임 */
 }
 
 .page-number {
-  padding: 10px;
-  cursor: pointer;
-  user-select: none;
-  color: #ffffff; /* 페이지 번호 색상을 흰색으로 변경 */
-  transition: background-color 0.3s;
+  padding: 5px; /* 기존 10px에서 줄임 */
+  font-size: 0.9em; /* 크기 줄임 */
+  color: #ffffff;
+  transition: background-color 0.2s; /* 기존 0.3s에서 줄임 */
 }
 
 .page-number:hover {
   background-color: #333333;
-  border-radius: 5px;
+  border-radius: 3px; /* 기존 5px에서 줄임 */
+  cursor: pointer;
 }
 
 .page-number.active {
@@ -268,13 +275,17 @@ export default defineComponent({
 }
 
 button {
-  margin: 20px;
-  padding: 10px;
+  margin: 10px; /* 기존 20px에서 줄임 */
+  padding: 8px; /* 기존 10px에서 줄임 */
+  font-size: 0.9em; /* 크기 줄임 */
   background-color: #f40612;
   color: #ffffff;
   border: none;
-  border-radius: 5px;
+  border-radius: 3px; /* 기존 5px에서 줄임 */
   cursor: pointer;
 }
 
+#table-view {
+  overflow-y: hidden !important;
+}
 </style>

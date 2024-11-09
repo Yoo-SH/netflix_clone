@@ -36,8 +36,9 @@
     <button @click="resetFilters" class="reset-button">Reset Filters</button>
   </div>
 
-  <!-- 로딩 표시 -->
-  <div v-if="isFetching" class="loading">Loading...</div>
+    <!-- 로딩 표시 -->
+    <div v-if="isFetching" class="loading">Loading...</div>
+
 
   <!-- 그리드 뷰 -->
   <div class="grid-view">
@@ -282,9 +283,9 @@ select:hover {
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.8);
-  color: #ffffff;
-  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #000000;
+  padding: 50px;
   border-radius: 5px;
   z-index: 1000;
 }
@@ -347,7 +348,7 @@ select:hover {
   padding: 10px 15px;
   border-radius: 5px;
   cursor: pointer;
-  z-index: 1000; /* 다른 요소 위에 표시되도록 설정 */
+  z-index: 2000; /* 다른 요소 위에 표시되도록 설정 */
 }
 
 .top-button:hover {

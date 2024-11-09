@@ -6,7 +6,7 @@
       </button>
     </div>
     <div v-if="isFetching && !isTableView" class="loading">Loading...</div>
-    <button v-if="showTopButton && !isTableView" @click="scrollToTop" class="top-button">TOP</button>
+    <button v-if="!isTableView" @click="scrollToTop" class="top-button">TOP</button>
     <!-- 포스터 리스트 추가 -->
     <div class="poster-list">
       <div
@@ -19,11 +19,13 @@
         <p class="poster-title">{{ item.name }}</p>
       </div>
     </div>
+    <!-- 무한 스크롤을 위한 감시 요소 -->
+    <div ref="infiniteScrollTarget" class="infinite-scroll-target"></div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
+import { defineComponent, ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 // TMDb API 기본 URL 설정
@@ -35,24 +37,26 @@ export default defineComponent({
     const popularItems = ref<any[]>([]);
     const currentPage = ref(1);
     const isFetching = ref(false);
-    const showTopButton = ref(false);
+    const showTopButton = ref(true);
     const router = useRouter();
+    const infiniteScrollTarget = ref<HTMLElement | null>(null);
 
     // API 키 가져오는 함수
     const getApiKeyFromLocalStorage = () => {
-      const rememberedUser = JSON.parse(localStorage.getItem('authUser') || '{}');
-      return rememberedUser.password || '';
+      const authUser = JSON.parse(localStorage.getItem('authUser') || '{}');
+      return authUser.password || '';
     };
 
     const API_KEY = getApiKeyFromLocalStorage();
 
-    const fetchPopularMovies = async () => {
+    const fetchPopularMovies = async (page = 1) => {
       if (isFetching.value) return;
       isFetching.value = true;
 
-      const url = `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=ko-KR&page=${currentPage.value}`;
+      const url = `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=ko-KR&page=${page}`;
       try {
         const response = await fetch(url);
+        if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
 
         popularItems.value = [
@@ -71,21 +75,17 @@ export default defineComponent({
       }
     };
 
-    // 스크롤 이벤트를 처리하는 함수
-    const handleScroll = () => {
-      // 화면의 맨 아래에 도달했는지 확인
-      const bottomOfWindow =
-        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 10;
-      if (bottomOfWindow) {
-        fetchPopularMovies();
+    // 무한 스크롤 감시 함수
+    const handleIntersect = (entries: IntersectionObserverEntry[]) => {
+      const [entry] = entries;
+      if (entry.isIntersecting && !isFetching.value) {
+        fetchPopularMovies(currentPage.value);
       }
-
-      // 스크롤 위치에 따라 TOP 버튼 표시 여부 설정
-      showTopButton.value = window.scrollY > 200;
     };
 
     // TOP 버튼 클릭 시 화면 맨 위로 스크롤하는 함수
     const scrollToTop = () => {
+      console.log('Scroll to top button clicked');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -119,18 +119,33 @@ export default defineComponent({
       return storedItems.some((storedItem: any) => storedItem.id === item.id);
     };
 
+    // 스크롤 이벤트 처리 함수
+    
+
     // 컴포넌트가 마운트될 때 호출되는 함수
     onMounted(() => {
       // 초기 인기 영화 데이터를 가져옴
       fetchPopularMovies();
+
+      // 무한 스크롤 감시자 설정
+      const observer = new IntersectionObserver(handleIntersect, {
+        root: null,
+        rootMargin: '0px',
+        threshold: 1.0,
+      });
+
+      if (infiniteScrollTarget.value) {
+        observer.observe(infiniteScrollTarget.value);
+      }
+
       // 스크롤 이벤트 리스너 추가
-      window.addEventListener('scroll', handleScroll);
+      
     });
 
     // 컴포넌트가 언마운트될 때 호출되는 함수
     onBeforeUnmount(() => {
       // 스크롤 이벤트 리스너 제거
-      window.removeEventListener('scroll', handleScroll);
+      
     });
 
     return {
@@ -141,96 +156,102 @@ export default defineComponent({
       goToTableView,
       toggleLocalStorage,
       isItemInLocalStorage,
+      infiniteScrollTarget,
     };
   },
 });
 </script>
 
 <style scoped>
-/* 기존 스타일 유지 */
-.loading {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.8);
-  color: #ffffff;
-  padding: 10px;
-  border-radius: 5px;
-  z-index: 1000; /* 다른 요소 위에 표시되도록 설정 */
-}
+  /* 기존 스타일 유지 */
+  .loading {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #000000;
+    padding: 50px;
+    border-radius: 5px;
+    z-index: 1000; /* 다른 요소 위에 표시되도록 설정 */
+  }
 
-.top-button {
-  position: fixed;
-  bottom: 80px;
-  right: 20px;
-  background-color: #e50914;
-  color: #ffffff;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  z-index: 1000; /* 다른 요소 위에 표시되도록 설정 */
-}
+  .top-button {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    background-color: #e50914;
+    color: #ffffff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000; /* 다른 요소 위에 표시되도록 설정 */
+  }
 
-.top-button:hover {
-  background-color: #f40612;
-}
+  .top-button:hover {
+    background-color: #f40612;
+  }
 
-.toggle-view-button {
-  margin: 20px;
-  padding: 10px;
-  background-color: #f40612;
-  color: #ffffff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
+  .toggle-view-button {
+    margin: 20px;
+    padding: 10px;
+    background-color: #f40612;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
 
-.toggle-view-button:hover {
-  background-color: #333333;
-}
+  .toggle-view-button:hover {
+    background-color: #333333;
+  }
 
-/* 포스터 이미지와 제목을 포함한 컨테이너 */
-.poster-list {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 20px;
-}
+  /* 포스터 이미지와 제목을 포함한 컨테이너 */
+  .poster-list {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+  }
 
-.poster-container {
-  position: relative;
-  transition: transform 0.3s;
-  cursor: pointer;
-}
+  .poster-container {
+    position: relative;
+    transition: transform 0.3s;
+    cursor: pointer;
+  }
 
-.poster-container:hover {
-  transform: scale(1.1);
-}
+  .poster-container:hover {
+    transform: scale(1.1);
+  }
 
-.poster-image {
-  width: 100%;
-  border-radius: 10px;
-  transition: transform 0.3s;
-  border: 2px solid transparent;
-}
+  .poster-image {
+    width: 100%;
+    border-radius: 10px;
+    transition: transform 0.3s;
+    border: 2px solid transparent;
+  }
 
-.selected-poster {
-  border-color: #e50914; /* 로컬 스토리지에 있는 경우 얇은 빨간 테두리 추가 */
-}
+  .selected-poster {
+    border-color: #e50914; /* 로컬 스토리지에 있는 경우 얇은 빨간 테두리 추가 */
+  }
 
-.poster-title {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  color: #ffffff;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 5px 10px;
-  border-radius: 5px;
-  transition: color 0.3s;
-}
+  .poster-title {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: color 0.3s;
+  }
 
-.poster-container:hover .poster-title {
-  color: #ffffff; /* 글자 색상 변경 */
-}
+  .poster-container:hover .poster-title {
+    color: #ffffff; /* 글자 색상 변경 */
+  }
+
+  .infinite-scroll-target {
+    height: 1px;
+    background-color: transparent;
+  }
 </style>

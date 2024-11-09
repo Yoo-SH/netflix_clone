@@ -8,7 +8,7 @@ import SignView from '../views/SignView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/home',
+    path: '/',
     name: 'home',
     component: HomeView,
   },

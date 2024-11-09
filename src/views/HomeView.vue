@@ -9,10 +9,10 @@
       <div class="poster-list">
         <!-- PosterComponent 컴포넌트를 사용하여 각 영화 포스터 출력 -->
         <PosterComponent
-          v-for="item in movies.data" <!-- 각 영화 데이터 반복 출력 -->
-          :key="item.id" <!-- 각 영화 아이템에 고유 키 설정 -->
-          :movie="item" <!-- 영화 데이터를 PosterComponent에 전달 -->
-          @toggle-movie-details="toggleMovieDetails" <!-- 영화 포스터 클릭 시 상세 정보 토글 함수 호출 -->
+          v-for="item in movies.data"
+          :key="item.id" 
+          :movie="item" 
+          @toggle-movie-details="toggleMovieDetails" 
         />
       </div>
     </div>
@@ -20,9 +20,9 @@
 
   <!-- 선택된 영화가 있을 경우 영화 상세 정보 표시 -->
   <PosterComponent
-    v-if="selectedMovie" <!-- 영화가 선택된 경우에만 컴포넌트 렌더링 -->
-    :movie="selectedMovie" <!-- 선택된 영화 데이터를 PosterComponent에 전달 -->
-    @close-movie-details="closeMovieDetails" <!-- 닫기 버튼 클릭 시 상세 정보 닫기 함수 호출 -->
+    v-if="selectedMovie" 
+    :movie="selectedMovie"
+    @close-movie-details="closeMovieDetails"
   />
 </template>
 

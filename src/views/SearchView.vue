@@ -1,44 +1,51 @@
 <template>
-  <div class="filter-section">
-    <!-- 필터 섹션은 변경 없음 -->
-    <label>
-      Genre:
-      <select v-model="selectedGenre">
-        <option value="">All</option>
-        <option v-for="genre in genres" :key="genre.id" :value="genre.id">
-          {{ genre.name }}
-        </option>
-      </select>
-    </label>
+  <div class="search-filter-container">
+    <!-- 검색창을 제일 왼쪽으로 이동 -->
+    <div class="search-container">
+      <input type="text" v-model="searchQuery" placeholder="Search movies..." class="search-input" />
+      <button @click="searchMovies" class="search-button">Search</button>
+    </div>
 
-    <label>
-      Rating:
-      <select v-model="selectedRatingRange">
-        <option value="">All</option>
-        <option value="0-4">4 and below</option>
-        <option value="4-5">4 - 5</option>
-        <option value="5-6">5 - 6</option>
-        <option value="6-7">6 - 7</option>
-        <option value="7-8">7 - 8</option>
-        <option value="8-9">8 - 9</option>
-        <option value="9-10">9 - 10</option>
-      </select>
-    </label>
+    <div class="filter-section">
+      <!-- 필터 섹션은 변경 없음 -->
+      <label>
+        Genre:
+        <select v-model="selectedGenre">
+          <option value="">All</option>
+          <option v-for="genre in genres" :key="genre.id" :value="genre.id">
+            {{ genre.name }}
+          </option>
+        </select>
+      </label>
 
-    <label>
-      Sort By:
-      <select v-model="sortBy">
-        <option value="popularity.asc">Popularity (Ascending)</option>
-        <option value="popularity.desc">Popularity (Descending)</option>
-      </select>
-    </label>
+      <label>
+        Rating:
+        <select v-model="selectedRatingRange">
+          <option value="">All</option>
+          <option value="0-4">4 and below</option>
+          <option value="4-5">4 - 5</option>
+          <option value="5-6">5 - 6</option>
+          <option value="6-7">6 - 7</option>
+          <option value="7-8">7 - 8</option>
+          <option value="8-9">8 - 9</option>
+          <option value="9-10">9 - 10</option>
+        </select>
+      </label>
 
-    <button @click="resetFilters" class="reset-button">Reset Filters</button>
+      <label>
+        Sort By:
+        <select v-model="sortBy">
+          <option value="popularity.asc">Popularity (Ascending)</option>
+          <option value="popularity.desc">Popularity (Descending)</option>
+        </select>
+      </label>
+
+      <button @click="resetFilters" class="reset-button">Reset Filters</button>
+    </div>
   </div>
 
-    <!-- 로딩 표시 -->
-    <div v-if="isFetching" class="loading">Loading...</div>
-
+  <!-- 로딩 표시 -->
+  <div v-if="isFetching" class="loading">Loading...</div>
 
   <!-- 그리드 뷰 -->
   <div class="grid-view">
@@ -73,6 +80,7 @@ export default defineComponent({
     const isFetching = ref(false);
     const currentPage = ref(1);
     const showTopButton = ref(false);
+    const searchQuery = ref<string>('');
     const router = useRouter();
     const infiniteScrollTarget = ref<HTMLElement | null>(null);
 
@@ -100,6 +108,10 @@ export default defineComponent({
       }
 
       url += `&sort_by=${sortBy.value}`;
+
+      if (searchQuery.value) {
+        url = `${BASE_URL}/search/movie?api_key=${API_KEY}&language=ko-KR&query=${searchQuery.value}&page=${page}`;
+      }
 
       try {
         const response = await fetch(url);
@@ -130,10 +142,17 @@ export default defineComponent({
       fetchMovies(currentPage.value);
     });
 
+    const searchMovies = () => {
+      movies.value = [];
+      currentPage.value = 1;
+      fetchMovies(currentPage.value);
+    };
+
     const resetFilters = () => {
       selectedGenre.value = '';
       selectedRatingRange.value = '';
       sortBy.value = 'popularity';
+      searchQuery.value = '';
     };
 
     const handleIntersect = (entries: IntersectionObserverEntry[]) => {
@@ -201,7 +220,9 @@ export default defineComponent({
       selectedRatingRange,
       sortBy,
       isFetching,
+      searchQuery,
       resetFilters,
+      searchMovies,
       infiniteScrollTarget,
       toggleLocalStorage,
       isItemInLocalStorage,
@@ -213,13 +234,51 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.filter-section {
+.search-filter-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-top: 51px;
+  margin-bottom: 20px;
+}
+
+.filter-section {
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
   gap: 15px;
-  margin-bottom: 20px;
+}
+
+.search-container {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.search-input {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #e74c3c;
+  background-color: #f8d7da;
+  transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #c0392b;
+  background-color: #fadbd8;
+}
+
+.search-button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #e74c3c;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: #c0392b;
 }
 
 label {

@@ -13,7 +13,7 @@
     </div>
     <div class="navbar-right">
       <router-link v-if="!isAuthenticated" to="/Sign" class="nav-item sign-button">Sign</router-link>
-      <button v-else @click="logout" class="nav-item logout-button">Logout</button>
+      <router-link v-else @click="logout" to="/Sign" class="nav-item logout-button">Logout</router-link>
     </div>
   </nav>
 </template>

@@ -80,12 +80,14 @@ export default defineComponent({
 
 /* 로그인 버튼 스타일 */
 .sign-button {
-  background-color: #e50914;
+  background-color: transparent;
   color: #ffffff;
+  border: 2px solid #e50914;
   padding: 0.5rem 1rem;
   border-radius: 20px;
-  text-align: center;
-  transition: background-color 0.3s ease;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  height: auto;
 }
 
 .sign-button:hover {

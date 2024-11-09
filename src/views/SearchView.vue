@@ -143,6 +143,13 @@ export default defineComponent({
     });
 
     const searchMovies = () => {
+      // 검색어를 로컬 스토리지에 저장
+      let storedSearches = JSON.parse(localStorage.getItem('searchQueries') || '[]');
+      if (searchQuery.value && !storedSearches.includes(searchQuery.value)) {
+        storedSearches.push(searchQuery.value);
+        localStorage.setItem('searchQueries', JSON.stringify(storedSearches));
+      }
+      
       movies.value = [];
       currentPage.value = 1;
       fetchMovies(currentPage.value);

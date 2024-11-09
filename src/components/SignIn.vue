@@ -23,9 +23,23 @@
 <script>
 import { defineComponent } from 'vue';
 import { useAuthStore } from '../store/auth';
+import { useToast } from 'vue-toastification';
 
 export default defineComponent({
   name: 'SignInComponent',
+  setup() {
+    const toast = useToast();
+
+    // 토스트 메시지 출력 함수
+    const showToast = () => {
+      toast.success('Login Success');
+    };
+
+    return {
+      toast,
+      showToast,
+    };
+  },
   data() {
     return {
       email: '',
@@ -80,6 +94,7 @@ export default defineComponent({
         } else {
           localStorage.removeItem('rememberedUser');
         }
+        this.showToast(); // 토스트 메시지 출력
         this.$emit('login-success');
       } else {
         this.errorMessage = 'Invalid email or password.';

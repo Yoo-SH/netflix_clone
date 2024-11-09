@@ -48,6 +48,51 @@
   .fade-enter, .fade-leave-to {
     opacity: 0;
   }
+
+
+  .netflix-toast {
+  background-color: #000000 !important; /* 강제로 어두운 배경 적용 */
+  border-left: 5px solid #000000 !important; /* 빨간색 테두리 강제 적용 */
+  border-radius: 6px;
+  color: rgb(181, 13, 13);
+  padding: 14px;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+  max-width: 300px;
+  text-align: center;
+}
+
+/* Toast body 스타일 */
+.netflix-toast-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 아이콘 스타일 */
+.netflix-toast-body::before {
+  content: "🎬";
+  font-size: 20px;
+  color: #e50914;
+  margin-right: 10px;
+}
+
+/* 애니메이션 효과 */
+.netflix-toast {
+  animation: netflixFadeIn 0.4s ease;
+}
+
+@keyframes netflixFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
   </style>
   
   

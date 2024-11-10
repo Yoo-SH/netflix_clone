@@ -30,5 +30,11 @@ jobs:
       - name: Build project
         run: npm run build  # 프로젝트 빌드 수행
 
+      - name: Set up Git
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"  # Git 사용자 정보 설정
+
+
       - name: Deploy to Production
         run: npm run deploy  # 프로덕션 배포 스크립트 실행

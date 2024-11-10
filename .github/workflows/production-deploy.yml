@@ -29,14 +29,12 @@ jobs:
       - name: Build project
         run: npm run build  # 프로젝트 빌드 수행
 
-      - name: Set up Git
-        run: |
-          git config --global user.name "GitHub Actions Bot"
-          git config --global user.email "actions@github.com"  # Git 사용자 정보 설정
-
       - name: Deploy to Production # 프로덕션 배포, GitHub 토큰을 사용하여 인증, 토큰 기간이 30일이므로 주기적으로 갱신 필요
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"  # Git 사용자 정보 설정
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git
           npm run deploy  # 프로덕션 배포 스크립트 실행
+      

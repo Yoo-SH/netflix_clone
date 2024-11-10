@@ -1,0 +1,32 @@
+# TRIgger: 특정 브랜치 Push
+# WORkflow: 자동 빌드
+name: Auto Build on Commit
+
+on:
+  push:
+    branches:
+      - develop
+      - feature/*
+      - hotfix/*  # develop, feature/*, hotfix/* 브랜치에 푸시될 때 워크플로우 트리거
+
+jobs:
+  auto-build:
+    runs-on: ubuntu-latest  # GitHub Actions가 실행될 운영체제
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2  # GitHub 리포지토리의 코드를 체크아웃
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'  # Node.js 버전 16 설치
+
+      - name: Install dependencies
+        run: npm install  # 프로젝트 의존성 설치
+
+      - name: Build project
+        run: npm run build  # 프로젝트 빌드 수행
+
+      - name: Check if build is successful
+        run: echo "Build completed successfully"  # 빌드가 성공적으로 완료되었는지 확인

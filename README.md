@@ -1,6 +1,6 @@
 # [넥플릭스 클론 코딩](https://yoo-sh.github.io/netflix_clone/#/)
 ![image](https://github.com/user-attachments/assets/00895e63-1861-4523-8b0b-84ee8a922a8a)
-## Project 기본정보
+## `**Project 기본정보**`
 * **[영상](https://youtu.be/edG9g7rg_2Y)**
     - TMDB API를 받아 비밀번호로 가입하여야 합니다.
     - 영상에 노출된 API키는 더 이상 유효하지 않습니다.
@@ -13,19 +13,19 @@
         - 유효한 사용자 정보
 
 
-## 기술 스택 명시
+## `기술 스택 명시`
     -   "axios": "^1.7.7", (API 통신)
         "gh-pages": "^6.2.0", (깃허브 페이지 배포)
         "pinia": "^2.2.6", (유저 정보 관리)
         "vue": "^3.2.13", (프론트엔드 페이지 프레임워크)
 
-## 설치 및 실행 가이드
+## `설치 및 실행 가이드`
 
 1. npm install
 
 2. npm run serve (localhost)
 
-## Project (폴더) 구조 설명
+## `Project (폴더) 구조 설명`
 ```
 ## Structure
 
@@ -57,11 +57,8 @@
 
 ```
 
-## 개발 가이드
-
-
-### 브랜치 워크플로우
-* main: 출시 준비 브랜치
+### `브랜치 워크플로우`
+* main: 출시 준비 브랜치(protected branch)
 * develop: 개발 브랜치
 * feature: 기능 개발 브랜치
 * hotfix: 긴급 수정 브랜치

@@ -1,25 +1,47 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import HomeView from '../views/HomeView.vue';
+import PopularView from '../views/PopularView.vue';
+import TableView from '../views/TableView.vue';
+import WishlistView from '../views/WishlistView.vue';
+import SearchView from '../views/SearchView.vue';
+import SignView from '../views/SignView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: HomeView,
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
-]
+    path: '/popular',
+    name: 'popular',
+    component: PopularView,
+  },
+  {
+    path: '/popular/table',
+    name: 'table',
+    component: TableView,
+  },
+  {
+    path: '/wishlist',
+    name: 'wishlist',
+    component: WishlistView
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: SearchView,
+  },
+  {
+    path: '/sign',
+    name: 'sign',
+    component: SignView,
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;

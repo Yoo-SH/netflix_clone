@@ -194,5 +194,56 @@
   .poster-container:hover .poster-title {
     color: #ffffff; /* 글자 색상 변경 */
   }
+   /* 모바일 크기에 맞는 반응형 디자인 */
+   @media (max-width: 768px) {
+    .poster-list {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding: 10px;
+      width: 100%;
+    }
+
+    .poster-title {
+      font-size: 12px;
+    }
+
+    .poster-container {
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .poster-image {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+    }
+
+    .top-button {
+      padding: 8px 12px;
+      font-size: 0.8em;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .poster-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 5px;
+      padding: 5px;
+    }
+
+    .poster-image {
+      margin-bottom: 10px;
+    }
+
+    .poster-title {
+      font-size: 10px;
+    }
+
+    .top-button {
+      bottom: 60px;
+      right: 10px;
+      font-size: 0.7em;
+    }
+  }
   </style>
   

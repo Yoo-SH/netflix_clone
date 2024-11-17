@@ -147,6 +147,78 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
+@media (max-width: 768px) {
+  .poster-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 한 줄에 2개 아이템 */
+    gap: 10px; /* 각 아이템 간격 */
+    padding: 10px; /* 좌우 패딩 추가 */
+  }
+
+  .poster-container {
+    margin: 0 auto; /* 가운데 정렬 */
+    width: 100%; /* 컨테이너 너비 100% */
+  }
+
+  .poster-image {
+    width: 100%; /* 이미지 너비 100% */
+    height: auto; /* 높이는 비율에 맞게 자동 설정 */
+    border-radius: 10px; /* 모서리 둥글게 */
+  }
+
+  .movie-details-modal {
+    padding: 10px; /* 내부 여백 추가 */
+  }
+
+  .movie-details-content {
+    max-width: 95%; /* 최대 너비 95% */
+    font-size: 0.9em; /* 텍스트 크기 약간 줄임 */
+  }
+
+  .section-title {
+    font-size: 1.2em; /* 섹션 제목 크기 줄임 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    padding: 10px 0; /* 위아래 패딩 추가 */
+  }
+
+  .loading {
+    bottom: 10px; /* 로딩 표시 위치 조정 */
+    font-size: 0.9em; /* 텍스트 크기 줄임 */
+  }
+
+  .top-button {
+    padding: 8px 12px; /* 버튼 크기 줄임 */
+    font-size: 0.8em; /* 텍스트 크기 줄임 */
+  }
+}
+
+/* 작은 모바일 크기용 미디어 쿼리 */
+@media (max-width: 480px) {
+  .poster-list {
+    grid-template-columns: 1fr; /* 한 줄에 1개 아이템 */
+  }
+
+  .poster-image {
+    margin-bottom: 15px; /* 이미지 하단 간격 추가 */
+  }
+
+  .movie-details-content {
+    font-size: 0.8em; /* 텍스트 크기 더 줄임 */
+  }
+
+  .section-title {
+    font-size: 1em; /* 섹션 제목 크기 더 줄임 */
+  }
+
+  .top-button {
+    bottom: 60px; /* 버튼 위치 조정 */
+    right: 10px; /* 버튼 오른쪽 위치 조정 */
+    font-size: 0.7em; /* 버튼 텍스트 크기 더 줄임 */
+  }
+}
+
+
 /******** 기본 스타일 유지 ********/
 .loading {
   position: fixed; /* 고정 위치 설정 */

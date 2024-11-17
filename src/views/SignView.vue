@@ -83,6 +83,7 @@
   animation: netflixFadeIn 0.4s ease;
 }
 
+/* 페이드 인 애니메이션 */
 @keyframes netflixFadeIn {
   from {
     opacity: 0;

@@ -441,11 +441,11 @@ select option {
   .search-filter-container {
     flex-direction: column; /* 세로 방향으로 배치 */
     align-items: flex-start; /* 시작점에 맞춰 정렬 */
-    gap: 10px; /* 각 필터 사이의 간격 */
+    gap: 5px; /* 각 필터 사이의 간격 */
   }
 
   .filter-section {
-    flex-direction: column; /* 세로 방향으로 배치 */
+    flex-direction: row; /* 세로 방향으로 배치 */
     align-items: flex-start; /* 시작점에 맞춰 정렬 */
     gap: 10px; /* 각 필터 사이의 간격 */
   }
@@ -474,6 +474,10 @@ select option {
   .poster-title {
     font-size: 0.8rem; /* 글꼴 크기 축소 */
     padding: 3px 7px; /* 내부 여백 축소 */
+  }
+
+  .top-button {
+    bottom: 100px; /* 하단에서 100px 위치로 수정 */
   }
 }
 </style>

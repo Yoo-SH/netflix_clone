@@ -114,4 +114,46 @@ export default defineComponent({
   margin-right: 1rem;
   font-weight: bold;
 }
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.5rem;
+  }
+
+  .mobile-menu-icon {
+    display: block;
+    cursor: pointer;
+    font-size: 1.5rem;
+    margin: 0.5rem 0;
+  }
+
+  .navbar-links {
+    display: none;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    background-color: #141414;
+    padding: 0.5rem;
+  }
+
+  .navbar-links.mobile-menu-open {
+    display: flex;
+  }
+
+  .navbar-left {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+   /* 기존에 .navbar-right가 display: none; 이었던 부분 수정 */
+   .navbar-right .nav-item {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+}
 </style>

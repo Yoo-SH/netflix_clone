@@ -5,8 +5,8 @@ name: Auto Build on Commit
 on:
   push:
     branches:
-      - develop
-      
+      - hotfix/*
+      - feature/*
 jobs:
   auto-build:
     runs-on: ubuntu-latest  # GitHub Actions가 실행될 운영체제

@@ -3,8 +3,8 @@ name: Deployment
 on:
   push:
     branches:
-      - main  # main 브랜치에 푸시될 때 production 배포
-      - dev   # dev 브랜치에 푸시될 때 development 배포
+      - main
+      - dev
 
 jobs:
   deploy:
@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        environment: [production, development]  # 환경 설정 분리
+        environment: [production, development]
 
     steps:
       - name: Checkout code
@@ -34,13 +34,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Set API Key
+        run: echo "VUE_APP_TMDB_API_KEY=${{ matrix.environment == 'production' && secrets.PRODUCTION_TMDB_API_KEY || secrets.DEVELOPMENT_TMDB_API_KEY }}" >> $GITHUB_ENV
+
       - name: Build project
-        env:
-          VUE_APP_TMDB_API_KEY: ${{ secrets[matrix.environment | upper]_TMDB_API_KEY }}  # 환경별 API 키 설정
-        run: npm run build:${{ matrix.environment }}  # 환경별 빌드 스크립트 실행
+        run: npm run build:${{ matrix.environment }}
 
       - name: Deploy to GitHub Pages
-        if: matrix.environment == 'production'  # production 환경일 때만 실행
+        if: matrix.environment == 'production'
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |

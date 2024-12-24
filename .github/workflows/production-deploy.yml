@@ -23,7 +23,7 @@ jobs:
         run: npm install  # 프로젝트 의존성 설치
 
       - name: Build project
-        env:
+        env.production:
           VUE_APP_TMDB_API_KEY: ${{ secrets.VUE_APP_TMDB_API_KEY }}
         run: npm run build  # 프로젝트 빌드 수행
 

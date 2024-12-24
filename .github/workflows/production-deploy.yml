@@ -1,38 +1,50 @@
-# TRIGGER: main 브랜치에 푸시되거나 PR이 병합될 때,
-# WORKFLOW: 프로덕션 빌드 및 배포
-name: Production Deployment
+name: Deployment
 
 on:
   push:
     branches:
-      - main  # main 브랜치에 푸시될 때 워크플로우 트리거
+      - main  # main 브랜치에 푸시될 때 production 배포
+      - dev   # dev 브랜치에 푸시될 때 development 배포
+
 jobs:
   deploy:
-    runs-on: ubuntu-latest  # GitHub Actions가 실행될 운영체제
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        environment: [production, development]  # 환경 설정 분리
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2  # GitHub 리포지토리의 코드를 체크아웃
+        uses: actions/checkout@v2
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'  # Node.js 버전 16 설치
+          node-version: '16'
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install dependencies
-        run: npm install  # 프로젝트 의존성 설치
+        run: npm install
 
       - name: Build project
-        env.production:
-          VUE_APP_TMDB_API_KEY: ${{ secrets.VUE_APP_TMDB_API_KEY }}
-        run: npm run build  # 프로젝트 빌드 수행
+        env:
+          VUE_APP_TMDB_API_KEY: ${{ secrets[matrix.environment | upper]_TMDB_API_KEY }}  # 환경별 API 키 설정
+        run: npm run build:${{ matrix.environment }}  # 환경별 빌드 스크립트 실행
 
-      - name: Deploy to Production # 프로덕션 배포, GitHub 토큰을 사용하여 인증, 토큰 기간이 30일이므로 주기적으로 갱신 필요
+      - name: Deploy to GitHub Pages
+        if: matrix.environment == 'production'  # production 환경일 때만 실행
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           git config --global user.name "GitHub Actions Bot"
-          git config --global user.email "actions@github.com"  # Git 사용자 정보 설정
+          git config --global user.email "actions@github.com"
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git
-          npm run deploy  # 프로덕션 배포 스크립트 실행
-      
+          npm run deploy

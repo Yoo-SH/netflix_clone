@@ -82,13 +82,8 @@ export default defineComponent({
       return pages;
     });
 
-    // 로컬 스토리지에서 API 키 가져오는 함수
-    const getApiKeyFromLocalStorage = () => {
-      const rememberedUser = JSON.parse(localStorage.getItem('authUser') || '{}'); // 로컬 스토리지에서 사용자 정보 가져오기
-      return rememberedUser.password || ''; // 사용자 비밀번호를 API 키로 사용
-    };
 
-    const API_KEY = getApiKeyFromLocalStorage(); // API 키 설정
+    const API_KEY = process.env.VUE_APP_TMDB_API_KEY;
 
     // 인기 영화를 가져오는 함수
     const fetchPopularMovies = async (initialLoad = false) => {

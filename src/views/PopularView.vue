@@ -43,12 +43,8 @@ export default defineComponent({
     const router = useRouter();
     const infiniteScrollTarget = ref<HTMLElement | null>(null);
 
-    const getApiKeyFromLocalStorage = () => {
-      const authUser = JSON.parse(localStorage.getItem('authUser') || '{}');
-      return authUser.password || '';
-    };
 
-    const API_KEY = getApiKeyFromLocalStorage();
+    const API_KEY = process.env.VUE_APP_TMDB_API_KEY
 
     const fetchPopularMovies = async (page = 1) => {
       if (isFetching.value) return;

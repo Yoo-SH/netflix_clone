@@ -91,21 +91,15 @@ export default defineComponent({
     const currentPage = ref(1); // 현재 페이지 번호
     const showTopButton = ref(false); // 상단 이동 버튼 표시 여부
     const searchQuery = ref<string>(''); // 검색어
-    const router = useRouter(); // vue-router 사용
     const infiniteScrollTarget = ref<HTMLElement | null>(null); // 무한 스크롤 감시 요소
 
-    // API 키를 로컬 스토리지에서 가져오는 함수
-    const getApiKeyFromLocalStorage = () => {
-      const rememberedUser = JSON.parse(localStorage.getItem('authUser') || '{}'); // 로컬 스토리지에서 저장된 사용자 정보 가져오기
-      return rememberedUser.password || ''; // 사용자 비밀번호를 API 키로 사용
-    };
 
     // 영화 목록을 가져오는 함수
     const fetchMovies = async (page = 1) => {
       if (isFetching.value) return; // 이미 데이터를 로딩 중인 경우 함수 종료
       isFetching.value = true; // 로딩 상태 설정
 
-      const API_KEY = getApiKeyFromLocalStorage(); // 로컬 스토리지에서 API 키 가져오기
+      const API_KEY = process.env.VUE_APP_TMDB_API_KEY;
 
       let url = `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=ko-KR&page=${page}`; // 영화 데이터 요청 URL 생성
 
@@ -140,7 +134,7 @@ export default defineComponent({
 
     // 장르 목록을 가져오는 함수
     const fetchGenres = async () => {
-      const API_KEY = getApiKeyFromLocalStorage(); // 로컬 스토리지에서 API 키 가져오기
+      const API_KEY = process.env.VUE_APP_TMDB_API_KEY
       const url = `${BASE_URL}/genre/movie/list?api_key=${API_KEY}&language=ko-KR`; // 장르 목록 요청 URL 생성
       try {
         const response = await fetch(url); // 장르 데이터를 가져오기 위해 API 호출

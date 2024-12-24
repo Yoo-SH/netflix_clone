@@ -51,6 +51,7 @@ export default defineComponent({
       isFetching.value = true;
 
       const url = `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=ko-KR&page=${page}`;
+      console.log(API_KEY)
       try {
         const response = await fetch(url);
         if (!response.ok) throw new Error('Network response was not ok');

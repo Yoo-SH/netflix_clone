@@ -53,6 +53,7 @@ export default defineComponent({
     // 특정 엔드포인트에서 영화 데이터를 가져오는 함수
     const fetchMoviesFromAPI = async (endpoint: string, title: string) => {
       const url = `${BASE_URL}/${endpoint}?api_key=${API_KEY}&language=ko-KR&page=1`; // API 요청 URL 생성
+      console.log(API_KEY)
       try {
         const response = await fetch(url); // API 호출
         const data = await response.json(); // 응답 데이터를 JSON 형식으로 변환

@@ -47,11 +47,10 @@ export default defineComponent({
     const router = useRouter(); // Vue Router 사용
 
     // API 키 가져오는 함수
-    const API_KEY = process.env.VUE_APP_TMDB_API_KEY
-    console.error("process", process)
-    console.error("process.env", process.env)
-    console.error("VUE_APP_TMDB_API_KEY:", process.env.VUE_APP_TMDB_API_KEY);
-
+    const API_KEY = process.env.VUE_APP_TMDB_API_KEY || '';
+    if (!API_KEY) {
+      console.error('API key is missing!');
+    }
 
     // 특정 엔드포인트에서 영화 데이터를 가져오는 함수
     const fetchMoviesFromAPI = async (endpoint: string, title: string) => {
@@ -71,6 +70,8 @@ export default defineComponent({
         movieSections.value.push({ title, data: movies }); // 영화 섹션에 추가
       } catch (error) {
         console.error('Failed to fetch movies:', error); // 오류 발생 시 콘솔에 메시지 출력
+        console.error("fetcg api key1", API_KEY)
+        console.error("fetcg api ke2")
       }
     };
 

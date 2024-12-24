@@ -70,8 +70,7 @@ export default defineComponent({
         movieSections.value.push({ title, data: movies }); // 영화 섹션에 추가
       } catch (error) {
         console.error('Failed to fetch movies:', error); // 오류 발생 시 콘솔에 메시지 출력
-        console.error("fetcg api key1", API_KEY)
-        console.error("fetcg api ke2")
+  
       }
     };
 

@@ -16,7 +16,7 @@
       <button @click="$emit('switch-form')" class="signup-button">Go to Sign Up</button> <!-- 회원가입 폼으로 전환하는 버튼 -->
       <!-- 로그인 실패 시 오류 메시지 출력 -->
       <span v-if="errorMessage" class="error">{{ errorMessage }}</span> <!-- 오류 메시지 출력 -->
-      <button class="kakao-login-btn" href="javascript:loginWithKakao()">
+      <button class="kakao-login-btn" @click="loginWithKakao()">
       <img src="../assets/kakao_login_medium_wide.png" alt="카카오 로그인 버튼" />
       </button>
     </div>
@@ -31,6 +31,7 @@ import { useToast } from 'vue-toastification'; // 토스트 알림 사용을 위
 export default defineComponent({
   name: 'SignInComponent', // 컴포넌트 이름 설정
   setup() {
+    
     const toast = useToast(); // 토스트 알림 사용 설정
 
     // 토스트 메시지 출력 함수
@@ -59,6 +60,23 @@ export default defineComponent({
       this.password = rememberedUser.password; // 비밀번호 설정
       this.rememberMe = true; // rememberMe 체크 상태 설정
     }
+  },
+  mounted() {
+    if (!window.Kakao.isInitialized()) {
+      console.log('window.kakao not inited, Initializing Kakao SDK...');
+      window.Kakao.init(process.env.VUE_APP_KAKAO_JS_KEY); // 본인의 JavaScript 앱 키 입력
+      console.log('Kakao SDK initialized:', window.Kakao.isInitialized());
+    }else{
+      // URI에서 code 가져오기
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+
+      if (code) {
+        this.getAccessToken(code); // code로 Access Token 요청
+      }
+      console.log('code:', code);
+    }
+
   },
   computed: {
     // 이메일이 유효한지 검사하는 계산 속성
@@ -101,6 +119,77 @@ export default defineComponent({
         this.errorMessage = 'Invalid email or password.'; // 오류 메시지 설정
       }
     },
+    loginWithKakao() {
+      if (window.Kakao && window.Kakao.Auth) {
+      window.Kakao.Auth.authorize({
+        redirectUri: 'http://localhost:8080/sign/congratulation', // 리다이렉트 URI를 실제 URI로 교체
+      })
+      .then(() => {
+        return window.Kakao.API.request({
+        url: '/v2/user/me',
+        suceess: (res) => {
+          console.log(res);
+        },
+        });
+      })
+      .then((res) => {
+        console.log("사용자정보", res);
+        console.log(res.kakao_account.email);
+        console.log(res.kakao_account.profile.nickname);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+      } else {
+      console.error('Kakao SDK is not initialized.');
+      }
+    },
+    async getAccessToken(code) {
+      const appKey = process.env.VUE_APP_KAKAO_REST_API_KEY;
+      const redirectUri = 'http://localhost:8080';
+
+      // Access Token 요청
+      try {
+        const response = await fetch('https://kauth.kakao.com/oauth/token', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+            grant_type: 'authorization_code',
+            client_id: appKey,
+            redirect_uri: redirectUri,
+            code: code,
+          }),
+        });
+
+        const data = await response.json();
+        if (data.access_token) {
+          console.log('Access Token:', data.access_token);
+          this.getUserInfo(data.access_token);
+        } else {
+          console.error('Failed to fetch access token:', data);
+        }
+      } catch (error) {
+        console.error('Error fetching access token:', error);
+      }
+    },
+    async getUserInfo(accessToken) {
+      // 사용자 정보 요청
+      try {
+        const response = await fetch('https://kapi.kakao.com/v2/user/me', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        const userInfo = await response.json();
+        console.log('User Info:', userInfo);
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    }, 
   },
 });
 </script>

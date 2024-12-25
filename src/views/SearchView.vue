@@ -1,4 +1,5 @@
 <template>
+  <NavbarComponent /> <!-- 네비게이션 바 컴포넌트 -->
   <div class="search-filter-container">
     <!-- 검색창과 버튼 섹션 -->
     <div class="search-container">
@@ -70,16 +71,22 @@
 
   <!-- 페이지 상단으로 이동 버튼 -->
   <button v-if="showTopButton" @click="scrollToTop" class="top-button">TOP</button> <!-- 페이지 상단으로 이동 버튼 -->
+  <FooterComponent /> <!-- 푸터 컴포넌트 -->
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import NavbarComponent from '../components/Navbar.vue';
+import FooterComponent from '../components/Footer.vue';
 
 const BASE_URL = 'https://api.themoviedb.org/3';
 
 export default defineComponent({
   name: 'SearchViewComponent',
+  components: {
+    NavbarComponent,
+    FooterComponent,
+  },
   setup() {
     // 상태 변수들 정의
     const movies = ref<any[]>([]); // 영화 목록 데이터

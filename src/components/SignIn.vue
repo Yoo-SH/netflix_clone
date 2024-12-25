@@ -16,6 +16,9 @@
       <button @click="$emit('switch-form')" class="signup-button">Go to Sign Up</button> <!-- 회원가입 폼으로 전환하는 버튼 -->
       <!-- 로그인 실패 시 오류 메시지 출력 -->
       <span v-if="errorMessage" class="error">{{ errorMessage }}</span> <!-- 오류 메시지 출력 -->
+      <button class="kakao-login-btn" @click="loginWithKakao()">
+      <img src="../assets/kakao_login_medium_wide.png" alt="카카오 로그인 버튼" />
+      </button>
     </div>
   </div>
 </template>
@@ -28,6 +31,7 @@ import { useToast } from 'vue-toastification'; // 토스트 알림 사용을 위
 export default defineComponent({
   name: 'SignInComponent', // 컴포넌트 이름 설정
   setup() {
+    
     const toast = useToast(); // 토스트 알림 사용 설정
 
     // 토스트 메시지 출력 함수
@@ -55,6 +59,13 @@ export default defineComponent({
       this.email = rememberedUser.email; // 이메일 설정
       this.password = rememberedUser.password; // 비밀번호 설정
       this.rememberMe = true; // rememberMe 체크 상태 설정
+    }
+  },
+  mounted() {
+    if (!window.Kakao.isInitialized()) {
+      console.log('window.kakao not inited, Initializing Kakao SDK...');
+      window.Kakao.init(process.env.VUE_APP_KAKAO_JS_KEY); // 본인의 JavaScript 앱 키 입력
+      console.log('Kakao SDK initialized:', window.Kakao.isInitialized());
     }
   },
   computed: {
@@ -98,7 +109,18 @@ export default defineComponent({
         this.errorMessage = 'Invalid email or password.'; // 오류 메시지 설정
       }
     },
-  },
+    loginWithKakao() {
+      if (window.Kakao && window.Kakao.Auth) {
+      window.Kakao.Auth.authorize({
+        redirectUri: 'http://localhost:8080/sign/congratulation', // 리다이렉트 URI를 실제 URI로 교체
+      }).catch((err) => {
+        console.error(err);
+      });
+      } else {
+      console.error('Kakao SDK is not initialized.');
+      }
+    }
+  }
 });
 </script>
 
@@ -180,6 +202,19 @@ export default defineComponent({
 
 .signup-button:hover {
   background-color: #444; /* 호버 시 배경색 변경 */
+}
+
+.kakao-login-btn{
+  width: 100%; /* 너비 100% 설정 */
+  height: 100%; /* 높이 100% 설정 */
+  display: flex; /* 플렉스 레이아웃 사용 */
+  background-color: #000;
+  justify-content: center; /* 수평 가운데 정렬 */
+  align-items: center; /* 수직 가운데 정렬 */
+  cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+  margin-top: 10px; /* 상단 여백 설정 */
+  border-radius: 4px;
+  border: 1px solid #000; /* 테두리 색상 빨강 설정 */
 }
 
 /* 오류 메시지 스타일 */

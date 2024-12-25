@@ -1,16 +1,20 @@
 <template>
+    <NavbarComponent />
     <div id="app">
       <transition name="fade">
         <!-- currentComponent 변수를 사용하여 SignIn과 SignUp 컴포넌트를 전환하는 부분 -->
         <component :is="currentComponent" @switch-form="switchForm" @login-success="navigateHome" @signup-success="navigateSignin"/>
       </transition>
     </div>
+    <FooterComponent />
   </template>
   
   <script>
   import SignInComponent from '../components/SignIn.vue';
   import SignUpComponent from '../components/SignUp.vue';
   import { defineComponent } from 'vue';
+  import NavbarComponent from '../components/Navbar.vue';
+  import FooterComponent from '../components/Footer.vue';
 
   export default defineComponent({
     name: 'SignViewComponent',
@@ -22,6 +26,8 @@
     components: {
       SignInComponent,
       SignUpComponent,
+      NavbarComponent,
+      FooterComponent,
     },
     methods: {
       // SignIn과 SignUp 컴포넌트를 전환하는 메서드

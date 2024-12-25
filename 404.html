@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="refresh" content="0; URL=/#/" />
     <script>
-      // GitHub Pages의 History 모드 문제 해결(URL=/#/: 브라우저가 현재 URL에서 루트 경로(# 포함)로 리다이렉트하도록 설정합니다.)
-      
-      // 현재 GitHub Pages의 "base 경로"를 추출합니다.
+      // GitHub Pages의 History 모드 문제 해결
+      // GitHub Pages의 "base 경로" 설정
       var base = '/netflix_clone/';
-      // 현재 URL 경로에서 "base 경로"를 제거합니다.
-      var redirect = window.location.pathname.replace(base, '') + window.location.search;
-      // 리다이렉트 URL을 '/netflix_clone/#/' 형식으로 변경합니다.
-      window.location.href = base + redirect;
+
+      // 현재 경로에서 base 경로를 제거하여 리다이렉트 경로 생성
+      var redirect = window.location.pathname.replace(base, '') + window.location.search + window.location.hash;
+
+      // 리다이렉트 URL을 생성하여 페이지 이동
+      if (redirect !== '') {
+        window.location.href = base + redirect;
+      } else {
+        window.location.href = base;
+      }
     </script>
   </head>
   <body></body>

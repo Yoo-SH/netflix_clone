@@ -1,8 +1,8 @@
 <template>
+  <NavbarComponent />
   <div id="home">
     <!-- 데이터 로딩 중일 때 로딩 표시 -->
     <div v-if="isFetching" class="loading">Loading...</div> <!-- 로딩 중일 때 표시되는 텍스트 -->
-
     <!-- 각 API에서 가져온 영화 섹션 반복 출력 -->
     <div class="movie-section" v-for="(movies, index) in movieSections" :key="index"> <!-- 각 영화 섹션에 고유 키 설정 -->
       <h2 class="section-title">{{ movies.title }}</h2> <!-- 영화 섹션의 제목 출력 -->
@@ -16,6 +16,7 @@
         />
       </div>
     </div>
+    <FooterComponent />
   </div>
 
   <!-- 선택된 영화가 있을 경우 영화 상세 정보 표시 -->
@@ -30,6 +31,9 @@
 import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue'; // Vue 컴포넌트와 필요한 함수들 import
 import { useRouter } from 'vue-router'; // Vue Router import
 import PosterComponent from '../components/Poster.vue'; // PosterComponent 컴포넌트 import
+import NavbarComponent from '../components/Navbar.vue';
+import FooterComponent from '../components/Footer.vue';
+
 
 // TMDb API 키 및 기본 URL 설정
 const BASE_URL = 'https://api.themoviedb.org/3'; // TMDb API 기본 URL
@@ -38,6 +42,8 @@ export default defineComponent({
   name: 'HomeViewComponent', // 컴포넌트 이름 설정
   components: {
     PosterComponent, // 사용할 컴포넌트 등록
+    NavbarComponent,
+    FooterComponent,
   },
   setup() {
     const movieSections = ref<any[]>([]); // 영화 섹션 데이터 목록

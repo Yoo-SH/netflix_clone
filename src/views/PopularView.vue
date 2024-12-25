@@ -1,4 +1,5 @@
 <template>
+  <NavbarComponent />
   <div id="popular">
     <div>
       <!-- 테이블 뷰로 전환하는 버튼 -->
@@ -25,16 +26,23 @@
     <!-- 무한 스크롤을 위한 감시 요소 -->
     <div ref="infiniteScrollTarget" class="infinite-scroll-target"></div>
   </div>
+  <FooterComponent />
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import NavbarComponent from '../components/Navbar.vue';
+import FooterComponent from '../components/Footer.vue';
 
 const BASE_URL = 'https://api.themoviedb.org/3';
 
 export default defineComponent({
   name: 'App',
+  components: {
+    NavbarComponent,
+    FooterComponent,
+  },
   setup() {
     const popularItems = ref<any[]>([]);
     const currentPage = ref(1);

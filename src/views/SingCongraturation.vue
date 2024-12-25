@@ -17,11 +17,18 @@
         <router-link to="/">서비스 이용하기</router-link>
       </div>
     </div>
+    <FooterComponent />
   </template>
   
   <script>
+import FooterComponent from '../components/Footer.vue';
+
   export default {
     name: "SignCongratulationsViewComponent",
+    components: {
+      FooterComponent,
+    },
+
     data() {
       return {
         userInfo: null, // 사용자 정보 저장
@@ -95,6 +102,9 @@
   
   <style scoped>
   .congratulations {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
     margin-top: 50px;
   }

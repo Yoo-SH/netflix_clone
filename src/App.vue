@@ -2,13 +2,11 @@
   <div id="app" class="full-width">
     <!-- 공통 네비게이션 바 -->
     <nav class="full-width">
-      <NavbarComponent />
     </nav>
     <!-- 라우트에 따라 다른 컴포넌트가 렌더링되는 부분 -->
     <router-view />
     <!-- 공통 푸터, 특정 라우트에서만 렌더링 안 되도록 조건 추가 -->
     <footer class="full-width" v-if="!isPopularTableRoute">
-      <FooterComponent />
     </footer>
   </div>
 </template>
@@ -16,14 +14,10 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import { useRoute } from 'vue-router';
-import NavbarComponent from './components/Navbar.vue';
-import FooterComponent from './components/Footer.vue';
 
 export default defineComponent({
   name: 'App',
   components: {
-    NavbarComponent,
-    FooterComponent,
   },
   setup() {
     const route = useRoute();

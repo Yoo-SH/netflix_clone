@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta http-equiv="refresh" content="0;URL='/netflix_clone/'">
     <script>
       // GitHub Pages의 History 모드 문제 해결
       // GitHub Pages의 "base 경로" 설정
       var base = '/netflix_clone/';
 
       // 현재 경로에서 base 경로를 제거하여 리다이렉트 경로 생성
-      var redirect = window.location.pathname.replace(base, '') + window.location.search + window.location.hash;
+      const redirectPath = currentPath.replace('/netflix_clone', '') + currentSearch + currentHash;
 
       // 리다이렉트 URL을 생성하여 페이지 이동
       if (redirect !== '') {
-        window.location.href = base + redirect;
+        window.location.replace(base + redirectPath);
       } else {
-        window.location.href = base;
+        window.location.replace(base);
       }
     </script>
   </head>

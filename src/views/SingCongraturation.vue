@@ -95,6 +95,13 @@ import { useAuthStore } from '../store/auth';
           this.userInfo = userInfo; // 사용자 정보를 Vue data에 저장
           const authStore = useAuthStore(); // 전역변수로 사용할 authStore 객체 가져오기
           authStore.login({ access_token: accessToken, userInfo : this.userInfo }); // access token과 사용자 정보를 저장
+          // 회원가입 성공 시 이메일과 비밀번호를 객체로 묶어서 localStorage의 배열에 저장
+          const userCredentials = {
+            kakao_account_id: userInfo.id
+          };
+          const existingCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
+          existingCredentials.push(userCredentials);
+          localStorage.setItem('userCredentials', JSON.stringify(existingCredentials));
           console.log("User Info:", userInfo);
         } catch (error) {
           console.error("Error fetching user info:", error);

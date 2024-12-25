@@ -45,7 +45,29 @@ import { useAuthStore } from '../store/auth';
   
         if (code) {
           console.log("Authorization Code:", code);
-          await this.getAccessToken(code); // Access Token 요청
+          const accessToken = await this.getAccessToken(code); // Access Token 요청
+          const userInfo = await this.getUserInfo(accessToken); // 사용자 정보 요청
+          this.userInfo = userInfo; // 사용자 정보를 Vue data에 저장
+
+          const existingCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
+          const userExists = existingCredentials.some(cred => cred.kakao_account_id === userInfo.id);
+
+          if (userExists) // 이미 가입한 사용자인 경우
+          {
+            const authStore = useAuthStore(); // 전역변수로 사용할 authStore 객체 가져오기
+            authStore.login({ access_token: accessToken, userInfo : this.userInfo }); // access token과 사용자 정보를 저장
+            this.$router.push('/');
+          } else // 신규 사용자인 경우
+          {
+            const authStore = useAuthStore(); // 전역변수로 사용할 authStore 객체 가져오기
+            authStore.login({ access_token: accessToken, userInfo : this.userInfo }); // access token과 사용자 정보를 저장
+            // 회원가입 성공 시 이메일과 비밀번호를 객체로 묶어서 localStorage의 배열에 저장
+            const userCredentials = {
+            kakao_account_id: userInfo.id
+            };
+            existingCredentials.push(userCredentials);
+            localStorage.setItem('userCredentials', JSON.stringify(existingCredentials));
+          }
         } else {
           console.warn("No Authorization Code found in URL.");
         }
@@ -72,8 +94,7 @@ import { useAuthStore } from '../store/auth';
           const data = await response.json();
           if (data.access_token) {
             console.log("Access Token:", data.access_token);
-            await this.getUserInfo(data.access_token); // 사용자 정보 요청
-            
+            return data.access_token;            
           } else {
             console.error("Failed to fetch access token:", data);
           }
@@ -92,23 +113,17 @@ import { useAuthStore } from '../store/auth';
           });
   
           const userInfo = await response.json();
-          this.userInfo = userInfo; // 사용자 정보를 Vue data에 저장
-          const authStore = useAuthStore(); // 전역변수로 사용할 authStore 객체 가져오기
-          authStore.login({ access_token: accessToken, userInfo : this.userInfo }); // access token과 사용자 정보를 저장
-          // 회원가입 성공 시 이메일과 비밀번호를 객체로 묶어서 localStorage의 배열에 저장
-          const userCredentials = {
-            kakao_account_id: userInfo.id
-          };
-          const existingCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
-          existingCredentials.push(userCredentials);
-          localStorage.setItem('userCredentials', JSON.stringify(existingCredentials));
           console.log("User Info:", userInfo);
+          return userInfo;
+          
         } catch (error) {
           console.error("Error fetching user info:", error);
         }
       },
+
     },
   };
+  
   </script>
   
   <style scoped>

@@ -66,17 +66,7 @@ export default defineComponent({
       console.log('window.kakao not inited, Initializing Kakao SDK...');
       window.Kakao.init(process.env.VUE_APP_KAKAO_JS_KEY); // 본인의 JavaScript 앱 키 입력
       console.log('Kakao SDK initialized:', window.Kakao.isInitialized());
-    }else{
-      // URI에서 code 가져오기
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get('code');
-
-      if (code) {
-        this.getAccessToken(code); // code로 Access Token 요청
-      }
-      console.log('code:', code);
     }
-
   },
   computed: {
     // 이메일이 유효한지 검사하는 계산 속성
@@ -123,74 +113,14 @@ export default defineComponent({
       if (window.Kakao && window.Kakao.Auth) {
       window.Kakao.Auth.authorize({
         redirectUri: 'http://localhost:8080/sign/congratulation', // 리다이렉트 URI를 실제 URI로 교체
-      })
-      .then(() => {
-        return window.Kakao.API.request({
-        url: '/v2/user/me',
-        suceess: (res) => {
-          console.log(res);
-        },
-        });
-      })
-      .then((res) => {
-        console.log("사용자정보", res);
-        console.log(res.kakao_account.email);
-        console.log(res.kakao_account.profile.nickname);
-      })
-      .catch((err) => {
+      }).catch((err) => {
         console.error(err);
       });
       } else {
       console.error('Kakao SDK is not initialized.');
       }
-    },
-    async getAccessToken(code) {
-      const appKey = process.env.VUE_APP_KAKAO_REST_API_KEY;
-      const redirectUri = 'http://localhost:8080';
-
-      // Access Token 요청
-      try {
-        const response = await fetch('https://kauth.kakao.com/oauth/token', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: new URLSearchParams({
-            grant_type: 'authorization_code',
-            client_id: appKey,
-            redirect_uri: redirectUri,
-            code: code,
-          }),
-        });
-
-        const data = await response.json();
-        if (data.access_token) {
-          console.log('Access Token:', data.access_token);
-          this.getUserInfo(data.access_token);
-        } else {
-          console.error('Failed to fetch access token:', data);
-        }
-      } catch (error) {
-        console.error('Error fetching access token:', error);
-      }
-    },
-    async getUserInfo(accessToken) {
-      // 사용자 정보 요청
-      try {
-        const response = await fetch('https://kapi.kakao.com/v2/user/me', {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        const userInfo = await response.json();
-        console.log('User Info:', userInfo);
-      } catch (error) {
-        console.error('Error fetching user info:', error);
-      }
-    }, 
-  },
+    }
+  }
 });
 </script>
 

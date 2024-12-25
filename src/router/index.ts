@@ -6,6 +6,7 @@ import WishlistView from '../views/WishlistView.vue';
 import SearchView from '../views/SearchView.vue';
 import SignView from '../views/SignView.vue';
 import SignCongratulationsViewComponent from '../views/SingCongraturation.vue';
+import NotFoundViewComponent from '../views/NotFoundView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -42,7 +43,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/sign/congratulation',
     name: 'SignCongratulationsViewComponent',
     component: SignCongratulationsViewComponent
-  }
+  },
+  { path: '/:pathMatch(.*)*',
+    name: 'NotFoundViewComponent',
+    component: NotFoundViewComponent
+  },
 ];
 
 const router = createRouter({

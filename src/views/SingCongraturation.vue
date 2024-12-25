@@ -22,6 +22,7 @@
   
   <script>
 import FooterComponent from '../components/Footer.vue';
+import { useAuthStore } from '../store/auth';
 
   export default {
     name: "SignCongratulationsViewComponent",
@@ -72,6 +73,7 @@ import FooterComponent from '../components/Footer.vue';
           if (data.access_token) {
             console.log("Access Token:", data.access_token);
             await this.getUserInfo(data.access_token); // 사용자 정보 요청
+            
           } else {
             console.error("Failed to fetch access token:", data);
           }
@@ -91,6 +93,8 @@ import FooterComponent from '../components/Footer.vue';
   
           const userInfo = await response.json();
           this.userInfo = userInfo; // 사용자 정보를 Vue data에 저장
+          const authStore = useAuthStore(); // 전역변수로 사용할 authStore 객체 가져오기
+          authStore.login({ access_token: accessToken, userInfo : this.userInfo }); // access token과 사용자 정보를 저장
           console.log("User Info:", userInfo);
         } catch (error) {
           console.error("Error fetching user info:", error);

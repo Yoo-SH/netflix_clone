@@ -35,7 +35,7 @@ export default defineComponent({
 
     return {
       isAuthenticated,
-      userInfo: user?.value?.email || user?.value?.userInfo.properties.nickname || '',
+      userInfo: user?.value?.email || user?.value?.userInfo?.properties?.nickname || '',
       logout,
     };
   },

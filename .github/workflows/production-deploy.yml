@@ -37,7 +37,10 @@ jobs:
         run: npm install
 
       - name: Set API Key
-        run: echo "VUE_APP_TMDB_API_KEY=${{ matrix.environment == 'production' && secrets.PRODUCTION_TMDB_API_KEY || secrets.DEVELOPMENT_TMDB_API_KEY }}" >> $GITHUB_ENV
+        run: |
+          echo "VUE_APP_TMDB_API_KEY=${{ matrix.environment == 'production' && secrets.PRODUCTION_TMDB_API_KEY || secrets.DEVELOPMENT_TMDB_API_KEY }}" >> $GITHUB_ENV
+          echo "VUE_APP_KAKAO_JS_KEY=${{ matrix.environment == 'production' && secrets.PRODUCTION_KAKAO_JS_KEY || secrets.DEVELOPMENT_KAKAO_JS_KEY }}" >> $GITHUB_ENV
+          echo "VUE_APP_KAKAO_REST_API_KEY=${{ matrix.environment == 'production' && secrets.PRODUCTION_KAKAO_REST_API_KEY || secrets.DEVELOPMENT_KAKAO_REST_API_KEY }}" >> $GITHUB_ENV
 
       - name: Build project
         run: npm run build:${{ matrix.environment }}

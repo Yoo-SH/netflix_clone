@@ -75,7 +75,7 @@ import { useAuthStore } from '../store/auth';
       async getAccessToken(code) {
         console.log("Requesting Access Token...");
         const appKey = process.env.VUE_APP_KAKAO_REST_API_KEY; // REST API 키
-        const redirectUri = "http://localhost:8080/sign/congratulation"; // 리다이렉트 URI
+        const redirectUri = process.env.VUE_APP_KAKAO_REDIRECT_URI; // 리다이렉트 URI
   
         try {
           const response = await fetch("https://kauth.kakao.com/oauth/token", {

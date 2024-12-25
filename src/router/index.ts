@@ -46,7 +46,7 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(), // History 모드로 변경
+  history: createWebHistory(process.env.VUE_APP_BASE_URL), // History 모드로 변경
   routes,
 });
 

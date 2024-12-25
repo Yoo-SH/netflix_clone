@@ -112,7 +112,7 @@ export default defineComponent({
     loginWithKakao() {
       if (window.Kakao && window.Kakao.Auth) {
       window.Kakao.Auth.authorize({
-        redirectUri: 'http://localhost:8080/sign/congratulation', // 리다이렉트 URI를 실제 URI로 교체
+        redirectUri: process.env.VUE_APP_KAKAO_REDIRECT_URI, // 리다이렉트 URI를 실제 URI로 교체
       }).catch((err) => {
         console.error(err);
       });

@@ -95,3 +95,7 @@
 |rename|파일 혹은 폴더명을 수정만 한 경우|login.js 파일명을 auth.js로 변경|
 |remove|파일을 삭제만 한 경우|사용되지 않는 old_styles.css 파일 삭제|
 
+# reference
+- [TMDB API](https://www.themoviedb.org/documentation/api)
+- [Kakao oauth](https://developers.kakao.com/docs/latest/ko/kakaologin/common)
+- [gh-pages 배포 시 URL 새로고침/직접 입력 문제](https://velog.io/@eunji9128/gh-pages-%EB%B0%B0%ED%8F%AC-%EC%8B%9C-URL-%EC%83%88%EB%A1%9C%EA%B3%A0%EC%B9%A8%EC%A7%81%EC%A0%91-%EC%9E%85%EB%A0%A5-%EB%AC%B8%EC%A0%9C )

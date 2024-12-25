@@ -1,4 +1,5 @@
 <template>
+    <NavbarComponent />
     <div v-if="isFetching" class="loading">Loading...</div>
     <div id="wishlist">
       <button v-if="showTopButton" @click="scrollToTop" class="top-button">TOP</button>
@@ -16,14 +17,21 @@
         </div>
       </div>
     </div>
+    <FooterComponent />
   </template>
   
   <script lang="ts">
   import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
   import { useRouter } from 'vue-router';
+  import NavbarComponent from '../components/Navbar.vue';
+  import FooterComponent from '../components/Footer.vue';
   
   export default defineComponent({
     name: 'WishlistViewComponent',
+    components: {
+      NavbarComponent,
+      FooterComponent,
+    },
     setup() {
       const popularItems = ref<any[]>([]);
       const currentPage = ref(1);

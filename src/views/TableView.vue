@@ -1,4 +1,5 @@
 <template>
+  <NavbarComponent /> <!-- 네비게이션 바 컴포넌트 추가 -->
   <div id="table-view">
     <!-- 인기 보기로 전환하는 버튼 -->
     <button @click="goToPopularView" class="toggle-view-button">Switch to Popular View</button> <!-- 버튼 클릭 시 goToPopularView 함수 호출 -->
@@ -26,12 +27,14 @@
       </div>
     </div>
   </div>
+  <FooterComponent /> <!-- 푸터 컴포넌트 추가 --> 
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref, onMounted } from 'vue'; // Vue와 필요한 함수들 import
 import { useRouter } from 'vue-router'; // Vue Router import
-
+import NavbarComponent from '../components/Navbar.vue';
+import FooterComponent from '../components/Footer.vue';
 interface Item {
   id: number; // 영화 ID
   name: string; // 영화 제목
@@ -40,6 +43,11 @@ interface Item {
 
 export default defineComponent({
   name: 'TableViewComponent', // 컴포넌트 이름 설정
+  components: { // 사용할 컴포넌트 설정
+    NavbarComponent, // 네비게이션 바 컴포넌트
+    FooterComponent, // 푸터 컴포넌트
+  },
+
   props: {
     items: {
       type: Array as PropType<Item[]>, // props로 영화 데이터 목록 받음

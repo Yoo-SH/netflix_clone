@@ -1,10 +1,11 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import PopularView from '../views/PopularView.vue';
 import TableView from '../views/TableView.vue';
 import WishlistView from '../views/WishlistView.vue';
 import SearchView from '../views/SearchView.vue';
 import SignView from '../views/SignView.vue';
+import SignCongratulationsViewComponent from '../views/SingCongraturation.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -37,10 +38,15 @@ const routes: Array<RouteRecordRaw> = [
     name: 'sign',
     component: SignView,
   },
+  {
+    path: '/sign/congratulation',
+    name: 'SignCongratulationsViewComponent',
+    component: SignCongratulationsViewComponent
+  }
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(process.env.BASE_URL),
+  history: createWebHistory(), // History 모드로 변경
   routes,
 });
 

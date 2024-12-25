@@ -14,7 +14,7 @@
     <div class="navbar-right">
       <router-link v-if="!isAuthenticated" to="/Sign" class="nav-item sign-button">Sign</router-link>
       <div v-else class="nav-item">
-        <span class="user-email">{{ userEmail }}</span>
+        <span class="user-email">{{ userInfo  }}</span>
       <router-link @click="logout" to="/Sign" class="nav-item logout-button">Logout</router-link>
     </div>
     </div>
@@ -35,7 +35,7 @@ export default defineComponent({
 
     return {
       isAuthenticated,
-      userEmail: user?.value?.email || '',
+      userInfo: user?.value?.email || user?.value?.userInfo.properties.nickname || '',
       logout,
     };
   },

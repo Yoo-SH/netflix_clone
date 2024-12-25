@@ -1,4 +1,4 @@
-# [넥플릭스 클론 코딩](https://yoo-sh.github.io/netflix_clone/#/)
+# [넥플릭스 클론 코딩](https://yoo-sh.github.io/netflix_clone/)
 ![image](https://github.com/user-attachments/assets/00895e63-1861-4523-8b0b-84ee8a922a8a)
 ## `**Project 기본정보**`
 * **[영상](https://youtu.be/edG9g7rg_2Y)**

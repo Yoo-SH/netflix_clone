@@ -1,8 +1,23 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="refresh" content="0;url=/netflix_clone/" />
+    <script>
+      // 현재 URL 정보
+      var currentPath = window.location.pathname;
+      var currentSearch = window.location.search;
+
+      // 카카오 OAuth 인증 경로 감지
+      var isKakaoOAuth = currentPath.includes('/oauth/authorize');
+
+      // GitHub Pages의 base 경로
+      var base = '/netflix_clone/';
+      var redirectPath = currentPath.replace(base, '') + currentSearch;
+
+      // 카카오 OAuth 경로인 경우 리다이렉트를 수행하지 않음
+      if (!isKakaoOAuth && !currentPath.startsWith(base + '#')) {
+        window.location.replace(base + redirectPath);
+      }
+    </script>
   </head>
-  <body>
-  </body>
+  <body></body>
 </html>

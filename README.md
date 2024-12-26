@@ -25,6 +25,8 @@
 
 2. npm run serve (localhost)
 
+3. npm run build:production (배포용 빌드)
+
 ## `Project (폴더) 구조 설명`
 ```
 ## Structure

@@ -1,17 +1,28 @@
-# [넥플릭스 클론 코딩](https://yoo-sh.github.io/netflix_clone/)
+# [넥플릭스 클론 코딩 - v2.1.2](https://yoo-sh.github.io/netflix_clone/)
 ![image](https://github.com/user-attachments/assets/00895e63-1861-4523-8b0b-84ee8a922a8a)
-## `**Project 기본정보**`
-* **[영상](https://youtu.be/edG9g7rg_2Y)**
-    - TMDB API를 받아 비밀번호로 가입하여야 합니다.
-    - 영상에 노출된 API키는 더 이상 유효하지 않습니다.
-    - 데이터는 pinna 혹은 로컬스토리지를 통해 관리됩니다.
-    - 로컬스토리지 데이터
-        - 최근 검색어 
-        - 즐겨찾기 영화목록
-        - 로그인한 사용자 정보
-        - 기억되는 사용자 정보
-        - 유효한 사용자 정보
 
+## 버전 업데이트 내용(v.2.0.0 -> v.2.1.2)
+- ### **[v.1.0.0](https://github.com/Yoo-SH/netflix_clone/blob/develop/docs/1.0.0.README.md)**
+
+- ### **[v.2.0.0](https://github.com/Yoo-SH/netflix_clone/blob/develop/docs/2.0.0.README.md)**
+
+- ### **v.2.1.2 업데이트 내용**
+
+        1. 카카오 oauth 기능 추가
+        2. gh-page webhashhistory -> webhistory로 변경
+        3. gh-page webhistory로 동작시 발생하는 문제, sessionStorage를 이용하여 수정
+        4. 404 page, 회원가입 축하 페이지 추가
+
+
+## `**Project 기본정보**`
+* ### **[동작 동영상](https://www.youtube.com/watch?v=UC0Byw90iAA)**
+- 데이터는 pinna 또는 로컬스토리지를 통해 관리됩니다.
+- 로컬스토리지 데이터
+    - 최근 검색어 
+    - 즐겨찾기 영화목록
+    - 회원가입한 사용자 정보
+    - 사용자 로그인상태 정보
+    - 사용자 kakao oauth 토큰 및 아이디 정보
 
 ## `기술 스택 명시`
     -   "axios": "^1.7.7", (API 통신)
@@ -49,6 +60,8 @@
 │   │   ├── 📄 signin.vue
 │   │   └── 📄 signup.vue
 │   ├── 📂 views
+│   │   ├── 📄 NotFoundView.vue
+│   │   ├── 📄 SignConfraturation.vue
 │   │   ├── 📄 homeView.vue (navbar + poster + footer)
 │   │   ├── 📄 PopularView.vue (navbar + footer)
 │   │   ├── 📄 SearchView.vue (navbar + footer)
@@ -73,31 +86,138 @@
 * hotfix: 긴급 수정 브랜치
 * gh-pages: 출시 브랜치
 
-* Production Deployment
-    -   main 브랜치로 PR 승인되거나, push될 때 자동 빌드 및 배포
-* Auto Build on Commit
-    -  develop, feature/, hotfix/, 브랜치에 push될 때 자동 빌드
+**Production Deployment**
+```
+main 브랜치로 PR 승인되거나, push될 때 자동 빌드 및 배포
+```
+**Auto Build on Commit**
+```
+develop, feature/, hotfix/, 브랜치에 push될 때 자동 빌드
+```
 
+## `kakao oauth`
+**1. 카카오 로그인을 위한 oauth 설정**
 
-## `git commit 규칙`
+    카카오 개발자 페이지에서 앱을 생성하고, 클라이언트 ID를 발급받기.
+**2. 카카오 로그인을 위한 설정**
 
-|type|활용상황|예제|
-|:---|:---|:---|
-|feat|새로운 기능 추가|사용자 로그인 기능 추가|
-|fix|버그 수정|잘못된 계산 로직 수정|
-|docs|문서 수정|README 파일에 설치 방법 추가|
-|style|코드 스타일 변경 (코드 포매팅, 세미콜론 누락 등)|코드에서 불필요한 세미콜론 제거|
-|design|사용자 UI 디자인 변경 (CSS 등) 기능 추가|메인 페이지 버튼 스타일 변경|
-|test|테스트 코드, 리팩토링 (Test Code)|로그인 기능에 대한 단위 테스트 추가|
-|refactor|refactor|중복된 코드 함수로 리팩토링|
-|build|빌드 파일 수정|Webpack 설정 파일 수정|
-|ci|CI 설정 파일 수정|GitHub Actions 워크플로우 파일 수정|
-|perf|성능 개선|API 응답 속도를 높이기 위한 쿼리 최적화|
-|chore|자잘한 수정이나 빌드 업데이트|패키지 버전 업데이트|
-|rename|파일 혹은 폴더명을 수정만 한 경우|login.js 파일명을 auth.js로 변경|
-|remove|파일을 삭제만 한 경우|사용되지 않는 old_styles.css 파일 삭제|
+    카카오 로그인을 위한 설정은 다음과 같습니다.
+       - 로그인 버튼 클릭 시, 카카오 로그인 페이지로 이동
+       - 카카오 로그인 페이지에서 로그인 후, 사용자 정보를 받아옴
+       - 받은 사용자 정보를 이용하여 로그인 처리
+       - 사용자 정보가 저장되어 있는 상태에서는 자동 로그인, 저장되지 않은 상태에서는 가입 축하페이지로 redirect
+
+**3. 카카오 로그인을 위한 코드**        
+
+**kakao oauth 로직**
+```javascript
+async getKaKaoOauthCode() {
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get("code");
+  
+        if (code) {
+          console.log("Authorization Code:", code);
+          const accessToken = await this.getAccessToken(code); // Access Token 요청
+          const userInfo = await this.getUserInfo(accessToken); // 사용자 정보 요청
+          this.userInfo = userInfo; // 사용자 정보를 Vue data에 저장
+
+          const existingCredentials = JSON.parse(localStorage.getItem('userCredentials')) || [];
+          const userExists = existingCredentials.some(cred => cred.kakao_account_id === userInfo.id);
+
+          if (userExists) // 이미 가입한 사용자인 경우
+          {
+            const authStore = useAuthStore(); 
+            authStore.login({ access_token: accessToken, userInfo : this.userInfo }); // access token과 사용자 정보를 저장
+            this.$router.push('/');
+          } else // 신규 사용자인 경우
+          {
+            const authStore = useAuthStore(); 
+            authStore.login({ access_token: accessToken, userInfo : this.userInfo }); // access token과 사용자 정보를 저장
+            
+            const userCredentials = {
+            kakao_account_id: userInfo.id
+            };
+            existingCredentials.push(userCredentials);
+            localStorage.setItem('userCredentials', JSON.stringify(existingCredentials));
+          }
+        } else {
+          console.warn("No Authorization Code found in URL.");
+        }
+      },
+```
+**access token을 요청**
+```javascript
+      async getAccessToken(code) {
+        console.log("Requesting Access Token...");
+        const appKey = process.env.VUE_APP_KAKAO_REST_API_KEY; // REST API 키
+        const redirectUri = process.env.VUE_APP_KAKAO_REDIRECT_URI; // 리다이렉트 URI
+  
+        try {
+          const response = await fetch("https://kauth.kakao.com/oauth/token", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+            },
+            body: new URLSearchParams({
+              grant_type: "authorization_code",
+              client_id: appKey,
+              redirect_uri: redirectUri,
+              code: code,
+            }),
+          });
+  
+          const data = await response.json();
+          if (data.access_token) {
+            console.log("Access Token:", data.access_token);
+            return data.access_token;            
+          } else {
+            console.error("Failed to fetch access token:", data);
+          }
+        } catch (error) {
+          console.error("Error fetching access token:", error);
+        }
+      },
+```
+**access token을 이용하여 사용자 정보를 요청**
+```javascript
+      async getUserInfo(accessToken) {
+        console.log("Requesting User Info...");
+        try {
+          const response = await fetch("https://kapi.kakao.com/v2/user/me", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+  
+          const userInfo = await response.json();
+          console.log("User Info:", userInfo);
+          return userInfo;
+          
+        } catch (error) {
+          console.error("Error fetching user info:", error);
+        }
+      },
+
+```
+
+**api key github action에 등록**
+```yaml
+- name: Set API Key
+        run: |
+          echo "VUE_APP_TMDB_API_KEY=${{ matrix.environment == 'production' && secrets.PRODUCTION_TMDB_API_KEY || secrets.DEVELOPMENT_TMDB_API_KEY }}" >> $GITHUB_ENV
+          echo "VUE_APP_KAKAO_JS_KEY=${{ matrix.environment == 'production' && secrets.PRODUCTION_KAKAO_JS_KEY || secrets.DEVELOPMENT_KAKAO_JS_KEY }}" >> $GITHUB_ENV
+          echo "VUE_APP_KAKAO_REST_API_KEY=${{ matrix.environment == 'production' && secrets.PRODUCTION_KAKAO_REST_API_KEY || secrets.DEVELOPMENT_KAKAO_REST_API_KEY }}" >> $GITHUB_ENV
+          echo "VUE_APP_KAKAO_REDIRECT_URI=${{ matrix.environment == 'production' && secrets.PRODUCTION_KAKAO_REDIRECT_URI || secrets.DEVELOPMENT_KAKAO_REDIRECT_URI }}" >> $GITHUB_ENV
+          echo "VUE_APP_BASE_URL=${{ matrix.environment == 'production' && secrets.PRODUCTION_BASE_URL || secrets.DEVELOPMENT_BASE_URL }}" >> $GITHUB_ENV
+
+```
+
 
 # reference
-- [TMDB API](https://www.themoviedb.org/documentation/api)
-- [Kakao oauth](https://developers.kakao.com/docs/latest/ko/kakaologin/common)
+- [TMDB API 문서](https://www.themoviedb.org/documentation/api)
+- [TMDB API 예제 코드](https://developer.themoviedb.org/reference/intro/getting-started)
+- [Kakao oauth 이해하기](https://developers.kakao.com/docs/latest/ko/kakaologin/common)
+- [kakao oauth rest api](https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api)
+- [kakao oauth javascript](https://developers.kakao.com/docs/latest/ko/kakaologin/js)
 - [gh-pages 배포 시 URL 새로고침/직접 입력 문제](https://velog.io/@eunji9128/gh-pages-%EB%B0%B0%ED%8F%AC-%EC%8B%9C-URL-%EC%83%88%EB%A1%9C%EA%B3%A0%EC%B9%A8%EC%A7%81%EC%A0%91-%EC%9E%85%EB%A0%A5-%EB%AC%B8%EC%A0%9C )

@@ -2,11 +2,11 @@
 ![image](https://github.com/user-attachments/assets/00895e63-1861-4523-8b0b-84ee8a922a8a)
 
 ## 버전 업데이트 내용(v.2.0.0 -> v.2.1.2)
-**[v.1.0.0 문서](https://github.com/Yoo-SH/netflix_clone/blob/develop/docs/1.0.0.README.md)**
+- ### **[v.1.0.0](https://github.com/Yoo-SH/netflix_clone/blob/develop/docs/1.0.0.README.md)**
 
-**[v.2.0.0 문서](https://github.com/Yoo-SH/netflix_clone/blob/develop/docs/2.0.0.README.md)**
+- ### **[v.2.0.0](https://github.com/Yoo-SH/netflix_clone/blob/develop/docs/2.0.0.README.md)**
 
-**v.2.1.2 업데이트 내용**
+### **v.2.1.2 업데이트 내용**
 ```
 1. 카카오 oauth 기능 추가
 2. gh-page webhashhistory -> webhistory로 변경
@@ -15,15 +15,14 @@
 ```
 
 ## `**Project 기본정보**`
-* **[영상](https://youtu.be/edG9g7rg_2Y)**
-    - 데이터는 pinna 혹은 로컬스토리지를 통해 관리됩니다.
+* ### **[동작 동영상](https://www.youtube.com/watch?v=UC0Byw90iAA)**
+    - 데이터는 pinna 또는 로컬스토리지를 통해 관리됩니다.
     - 로컬스토리지 데이터
         - 최근 검색어 
         - 즐겨찾기 영화목록
-        - 로그인한 사용자 정보
-        - 기억되는 사용자 정보
-        - 유효한 사용자 정보
-
+        - 회원가입한 사용자 정보
+        - 사용자 로그인상태 정보
+        - 사용자 kakao oauth 토큰 및 아이디 정보
 
 ## `기술 스택 명시`
     -   "axios": "^1.7.7", (API 통신)
@@ -109,6 +108,7 @@ develop, feature/, hotfix/, 브랜치에 push될 때 자동 빌드
        - 사용자 정보가 저장되어 있는 상태에서는 자동 로그인, 저장되지 않은 상태에서는 가입 축하페이지로 redirect
 
 3. 카카오 로그인을 위한 코드        
+
 **kakao oauth 로직**
 ```javascript
 async getKaKaoOauthCode() {
@@ -201,9 +201,22 @@ async getKaKaoOauthCode() {
 
 ```
 
+**api key github action에 등록**
+```yaml
+- name: Set API Key
+        run: |
+          echo "VUE_APP_TMDB_API_KEY=${{ matrix.environment == 'production' && secrets.PRODUCTION_TMDB_API_KEY || secrets.DEVELOPMENT_TMDB_API_KEY }}" >> $GITHUB_ENV
+          echo "VUE_APP_KAKAO_JS_KEY=${{ matrix.environment == 'production' && secrets.PRODUCTION_KAKAO_JS_KEY || secrets.DEVELOPMENT_KAKAO_JS_KEY }}" >> $GITHUB_ENV
+          echo "VUE_APP_KAKAO_REST_API_KEY=${{ matrix.environment == 'production' && secrets.PRODUCTION_KAKAO_REST_API_KEY || secrets.DEVELOPMENT_KAKAO_REST_API_KEY }}" >> $GITHUB_ENV
+          echo "VUE_APP_KAKAO_REDIRECT_URI=${{ matrix.environment == 'production' && secrets.PRODUCTION_KAKAO_REDIRECT_URI || secrets.DEVELOPMENT_KAKAO_REDIRECT_URI }}" >> $GITHUB_ENV
+          echo "VUE_APP_BASE_URL=${{ matrix.environment == 'production' && secrets.PRODUCTION_BASE_URL || secrets.DEVELOPMENT_BASE_URL }}" >> $GITHUB_ENV
+
+```
+
 
 # reference
-- [TMDB API](https://www.themoviedb.org/documentation/api)
+- [TMDB API 문서](https://www.themoviedb.org/documentation/api)
+- [TMDB API 예제 코드](https://developer.themoviedb.org/reference/intro/getting-started)
 - [Kakao oauth 이해하기](https://developers.kakao.com/docs/latest/ko/kakaologin/common)
 - [kakao oauth rest api](https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api)
 - [kakao oauth javascript](https://developers.kakao.com/docs/latest/ko/kakaologin/js)

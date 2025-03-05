@@ -15,7 +15,7 @@
 
 
 ## `**Project 기본정보**`
-* ### **[동작 동영상](https://www.youtube.com/watch?v=UC0Byw90iAA)**
+* ### **[동작 동영상](https://www.youtube.com/watch?v=z5HD7PneSzI)**
 - 데이터는 pinna 또는 로컬스토리지를 통해 관리됩니다.
 - 로컬스토리지 데이터
     - 최근 검색어 

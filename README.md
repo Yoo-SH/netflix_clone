@@ -1,8 +1,6 @@
 # [넥플릭스 클론 코딩 - v2.1.2](https://yoo-sh.github.io/netflix_clone/)
 ![Image](https://github.com/user-attachments/assets/f4f5df8c-cfea-4c9c-9ea6-313a04fcbfba)
 
-[![시연 영상 썸네일](https://github.com/user-attachments/assets/00895e63-1861-4523-8b0b-84ee8a922a8a)](https://github.com/user-attachments/assets/41d7c322-377e-48c8-9ac1-5907ddf51a73)
-
 
 ## 버전 업데이트 내용(v.2.0.0 -> v.2.1.2)
 - ### **[v.1.0.0](https://github.com/Yoo-SH/netflix_clone/blob/develop/docs/1.0.0.README.md)**
@@ -26,6 +24,10 @@
     - 회원가입한 사용자 정보
     - 사용자 로그인상태 정보
     - 사용자 kakao oauth 토큰 및 아이디 정보
+
+## `**시연영상**`
+
+[![시연 영상 썸네일](https://github.com/user-attachments/assets/00895e63-1861-4523-8b0b-84ee8a922a8a)](https://github.com/user-attachments/assets/41d7c322-377e-48c8-9ac1-5907ddf51a73)
 
 ## `기술 스택 명시`
     -   "axios": "^1.7.7", (API 통신)

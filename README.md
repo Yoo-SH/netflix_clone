@@ -1,4 +1,5 @@
 # [넥플릭스 클론 코딩 - v2.1.2](https://yoo-sh.github.io/netflix_clone/)
+![Image](https://github.com/user-attachments/assets/f4f5df8c-cfea-4c9c-9ea6-313a04fcbfba)
 [![시연 영상 썸네일](https://github.com/user-attachments/assets/00895e63-1861-4523-8b0b-84ee8a922a8a)](https://github.com/user-attachments/assets/41d7c322-377e-48c8-9ac1-5907ddf51a73)
 
 
